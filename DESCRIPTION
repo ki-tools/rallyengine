@@ -1,0 +1,23 @@
+Package: rallyengine
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: person("Ryan", "Hafen", email = "ryan.hafen@gmail.com", role = c("aut", "cre"))
+Description: Engine for parsing rally templates and generating rally outputs.
+Depends: R (>= 3.4.1)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: httr,
+    magrittr,
+    jsonlite,
+    base64enc,
+    readr,
+    readxl,
+    dplyr,
+    officer,
+    png,
+    yaml,
+    whisker,
+    parsedate,
+    digest
+RoxygenNote: 6.0.1

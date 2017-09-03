@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>HBGDki Rally Dashboard</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/font/Gidole/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/datatables/datatables.min.css"/>
+    <link rel="stylesheet" href="assets/css/table.css">
+  </head>
+
+  <body>
+    <div class="navbar-fixed">
+      <nav class="bmgf-green" role="navigation">
+        <div class="nav-wrapper container"><span id="logo-container" class="sanspro"><span style="font-weight:bold;">HBGDki</span> Rally Dashboard</span>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="index.html">Rallies</a></li>
+            <li class="active"><a href="questions.html">Questions</a></li>
+          </ul>
+
+          <ul id="nav-mobile" class="side-nav">
+            <li><a href="#">Navbar Link</a></li>
+          </ul>
+          <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+      </nav>
+    </div>
+    <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        <br>
+        <h4 class="center page-title" id="title"></h4>
+        <br>
+      </div>
+    </div>
+
+    <div class="main-container">
+      <div class="container">
+        <div class="row">
+          <table id="questions" class="row-border">
+            <thead>
+              <th>HBGD?</th>
+              <th>Working Group Prioritized Question</th>
+              <th>Priority Score</th>
+              <!-- <th>Working Group Owner(s)</th> -->
+              <th>#Rallies</th>
+              <th>Rally Link(s)</th>
+              <th>Status</th>
+              <th>ID</th>
+            </thead>
+            <tbody id="question-data">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row hidden" id="question-box">
+          <span class="question-header">HBGD Questions</span>
+          <ul class="hbgd-questions">
+          <li class="hbgd-question"><span  class="bold hbgd-cat-A">A.</span> To what extent is growth faltering explained by prenatal vs postnatal insults?</li>
+          <li class="hbgd-question"><span  class="bold hbgd-cat-B">B.</span> What kind of recovery can we expect in infants born small for gestational age (SGA)?</li>
+          <li class="hbgd-question"><span  class="bold hbgd-cat-C">C.</span> Can we quantitatively characterize the relation and interaction between preterm birth, physical growth, and brain development?</li>
+          <li class="hbgd-question"><span  class="bold hbgd-cat-D">D.</span> Are there disproportionately large contributions to growth faltering from specific pathways, and can we rank-order risk factors?</li>
+          <li class="hbgd-question"><span  class="bold hbgd-cat-E">E.</span> Are there specific pathways directly impacting linear growth faltering that coincide with increased risk of noncommunicable diseases such as cardiovascular disease, obesity, and diabetes?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script id="template" type="x-tmpl-mustache">
+      {{#.}}
+      <tr>
+        <td class="bold hbgd-cat hbgd-cat-{{cat}}">
+          <span class="tooltipped ttp" data-position="top" data-delay="10">
+          {{cat}}
+          </span>
+        </td>
+        <td>{{question}}</td>
+        <td>{{score}}</td>
+        <!-- <td>{{owners}}</td> -->
+        <td>{{n_rallies}}</td>
+        <td>{{{rally_link}}}</td>
+        <td class="rally-status" data-end="{{end}}">Inactive</td>
+        <td class="dim">{{id}}</td>
+      </tr>
+      {{/.}}
+    </script>
+
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.mark.min.js"></script>
+    <script type="text/javascript" src="assets/js/mustache.min.js"></script>
+    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
+    <script type="text/javascript" src="assets/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="assets/datatables/datatables.mark.js"></script>
+    <script type="text/javascript" src="assets/js/table.js"></script>
+  </body>
+</html>

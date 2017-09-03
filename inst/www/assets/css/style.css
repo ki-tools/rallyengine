@@ -1,0 +1,118 @@
+body {
+  font-family: "Gidole-Regular", sans-serif;
+  color: #392D1C;
+}
+
+.card .card-content p {
+  color: #392D1C;
+}
+
+a {
+  color: #3086AB;
+}
+
+.bmgf-green {
+  background-color: #8CB7C7;
+}
+
+.grid-item {
+  width: 400px;
+  height: 300px;
+}
+
+.card-title {
+  line-height: 24px !important;
+}
+
+.page-title {
+  font-weight: 300;
+}
+
+#logo-container {
+  font-size: 25px;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+strong {
+  font-weight: 700 !important;
+}
+
+/*.main-container {
+  margin-top: -20px;
+}
+*/
+.row {
+  margin-bottom: 8px !important;
+}
+
+.rally-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.rally-bold {
+  color: #9B242D;
+  font-weight: 700;
+}
+
+.rally-content {
+  height: 300px;
+  padding: 15px !important;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}
+
+.rally-focus {
+  overflow-y: auto;
+  // background-color: #E2EDF1;
+  background-color: #F1EFEC;
+}
+
+.meta-bullet {
+  font-size: 10px;
+}
+
+.rally-list-item a {
+  color: #333;
+  border-bottom: 1px dotted #333 !important;
+}
+
+.more-icon {
+  position: absolute;
+  right:0;
+  bottom:0;
+  padding-bottom:5px;
+}
+
+.more-icon:hover {
+  cursor: pointer;
+}
+
+.icon-small {
+  font-size: 12px;
+}
+
+.rally-link-icon {
+  font-size:18px;
+}
+
+.rally-item {
+  padding-left: 5px;
+  color: #999999 !important;
+}
+
+.switch-label {
+  line-height: 18px;
+}
+
+.current-switch {
+  padding-top: 8px;
+}
+
+.hidden {
+  display: none;
+}
+

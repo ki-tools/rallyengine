@@ -1,0 +1,39 @@
+- header: "HBGDki Rally {{number}}: {{title}}"
+  content:
+    type: paragraph
+    lines: "Reported by NAME on behalf of the HBGDki Rally {{number}} Participants: {{participant_names}}\n\n{{current_month}} {{current_year}}"
+    font_size: 24
+    offx: 1
+    offy: 2.5
+    width: 11.6
+    height: 3.75
+- header: "Rally {{number}}. Background"
+  content:
+    type: detail
+    id: bg_detail
+- header: "Rally {{number}}"
+  content:
+    type: paragraph
+    lines: "Question: {{question}}\n\nMotivation: {{motivation_bulletized}}\n\nRally Focus: {{focus}}"
+- header: "Rally {{number}}. Deliverables"
+  content:
+    type: paragraph
+    lines: "{{deliverables_joined}}"
+- header: "Rally {{number}}. Analysis Plan: Data Inventory"
+  content:
+    type: paragraph
+    lines: "{{data_desc}}"
+- header: "Rally {{number}}. Analysis Plan: Available Predictors"
+  content: "c"
+- header: "Rally {{number}}. Methods"
+  content:
+    type: detail
+    id: methods_detail
+- header: "Rally {{number}}. Results"
+  content:
+    type: detail
+    id: results_detail
+- header: "Rally {{number}}. Next Steps"
+  content:
+    type: paragraph
+    lines: "{{next}}"

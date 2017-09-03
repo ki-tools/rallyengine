@@ -1,0 +1,18 @@
+.Rproj.user
+.Rhistory
+.RData
+_ignore
+
+
+.DS_Store
+# History files
+.Rhistory
+.Rapp.history
+# Example code in package build process
+*-Ex.R
+# R data files from past sessions
+.Rdata
+# RStudio files
+.Rproj.user/
+rallyengine.sublime*
+_ignore

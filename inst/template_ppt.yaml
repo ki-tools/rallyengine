@@ -1,0 +1,40 @@
+- header: "HBGDki Rally {{number}}: {{title}}"
+  content:
+    type: title
+    sec1: "Rally {{number}}, completed {{timeline_nice.end}}"
+    sec2: "{{title}}"
+    sec3: "Presented by {{presenter}} on Behalf of the HBGDki Rally {{number}} Participants: {{participant_names}}"
+- header: "Rally {{number}}. Background"
+  content:
+    type: detail
+    id: bg_detail
+- header: "Rally {{number}}"
+  content:
+    type: paragraph
+    lines: "Question: {{question}}\nMotivation: {{motivation}}\nRally Focus: {{focus}}"
+- header: "Rally {{number}}. Deliverables"
+  content:
+    type: paragraph
+    id: deliverables
+- header: "Rally {{number}}. Analysis Plan: Data Inventory"
+  content:
+    type: paragraph
+    id: data_desc
+# - header: "Rally {{number}}. Analysis Plan: Available Predictors"
+#   content:
+- header: "Rally {{number}}. Methods"
+  content:
+    type: detail
+    id: methods_detail
+- header: "Rally {{number}}. Results"
+  content:
+    type: detail
+    id: results_detail
+- header: "Rally{{number}}. Value"
+  content:
+    type: paragraph
+    id: value
+- header: "Rally {{number}}. Next Steps"
+  content:
+    type: paragraph
+    id: next

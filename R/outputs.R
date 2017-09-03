@@ -1,0 +1,196 @@
+#' Get and parse full rally template data for a either a base rally OSF id or a vector of rally OSF ids
+#'
+#' @param root_id root rally OSF component id
+#' @param rally_ids vector of OSF component ids pointing to indivual rally spaces
+#' @param force should template content be forced to be read and parsed from OSF instead of from the cache even if text content matches?
+#' @export
+#' @examples
+#' \dontrun{
+#' # init_rally_engine() # one time only
+#' rally_ids <- get_rally_ids()
+#' content <- get_rally_content(rally_ids = rally_ids)
+#' gen_overview_data(content)
+#' gen_dashboard_data(content)
+#' gen_questions_data(content)
+#' gen_ppt(content)
+#' }
+get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
+  if (is.null(rally_ids)) {
+    if (is.null(root_id)) {
+      rally_ids <- get_rally_ids()
+    } else {
+      rally_ids <- get_rally_ids(root_id)
+    }
+  }
+  if (is.null(rally_ids))
+    stop("Must specify either root_id or rally_ids.", call. = FALSE)
+
+  parse_wikis(rally_ids, force = force)
+}
+
+#' Open master wikis in web browser for a given set of rally OSF ids
+#'
+#' @param rally_ids vector of OSF component ids pointing to indivual rally spaces
+#' @param edit should the pages be opened in edit view?
+#' @importFrom utils browseURL
+#' @export
+browse_templates <- function(rally_ids, edit = TRUE) {
+  urls <- paste0("https://osf.io/", rally_ids, "/wiki/home/")
+  if (edit)
+    urls <- paste0(urls, "?edit&menu")
+  sapply(urls, browseURL)
+}
+
+#' Generate data for overview pages
+#'
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param base_path location of base path where outputs should be stored
+#' @importFrom jsonlite toJSON
+#' @export
+gen_overview_data <- function(content, base_path = get_rally_base_path()) {
+  for (x in content) {
+    keep <- c("number", "title", "background", "motivation", "focus", "timeline_nice",
+      "deliverables", "participants", "data_list", "data_outcomes", "data_predictors",
+      "methods", "findings", "value", "next_steps")
+    x <- x[keep]
+    clean <- c("deliverables", "data_predictors", "findings", "next_steps")
+    for (nm in clean) {
+      x[[nm]] <- paste(unlist(lapply(x[[nm]][[1]],
+        function(a) paste(a, collapse = "\n"))), collapse = "\n\n")
+    }
+    out <- jsonlite::toJSON(x, auto_unbox = TRUE, pretty = TRUE)
+    # out <- paste0("var data = ", out)
+
+    overview_path <- file.path(base_path, "overview")
+    if (!dir.exists(overview_path))
+      dir.create(overview_path)
+    cat(out, file = paste0(overview_path, "/", x$number, ".json"))
+  }
+}
+
+#' Generate dashboard page data from rally content
+#'
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param base_path location of base path where outputs should be stored
+#' @export
+gen_dashboard_data <- function(content, base_path = get_rally_base_path()) {
+  res <- unname(lapply(content, function(a) {
+    a <- a[c("number", "title", "tags", "participants", "timeline", "focus")]
+    a$tags <- paste(a$tags, collapse = ", ")
+    a$overview_link <- paste0("overview.html?id=", a$number)
+    a$report_link <- paste0("ppt/Rally-", a$number, "_report.pptx")
+    a
+  }))
+
+  out <- as.character(jsonlite::toJSON(res, auto_unbox = TRUE, pretty = TRUE))
+  # out <- paste0("var data = ", out)
+
+  dashboard_path <- base_path # for now...
+  if (!dir.exists(dashboard_path))
+    dir.create(dashboard_path)
+  cat(out, file = paste0(dashboard_path, "/rally_data.json"))
+}
+
+#' Generate questions page data from rally content
+#'
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param base_path location of base path where outputs should be stored
+#' @importFrom dplyr bind_rows data_frame group_by summarise
+#' @export
+gen_questions_data <- function(content, base_path = get_rally_base_path()) {
+  tmp <- dplyr::bind_rows(lapply(content, function(a) {
+    dplyr::data_frame(
+      rally_id = a$number,
+      id = as.numeric(a$hbgd_question_id),
+      start = a$timeline$start,
+      end = a$timeline$end
+    )
+  }))
+
+  aa <- tmp %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(
+      n_rallies = n(),
+      rally_link = paste0(paste0("<a href='overview/", rally_id, "_overview.html' target='_blank'>", rally_id, "</a>"), collapse = ", "),
+      end = max(end)
+    )
+
+  quests <- suppressMessages(dplyr::left_join(quests, aa))
+
+  out <- as.character(jsonlite::toJSON(quests, auto_unbox = TRUE, pretty = TRUE))
+
+  questions_path <- base_path # for now...
+  if (!dir.exists(questions_path))
+    dir.create(questions_path)
+  # out <- paste0("var data = ", out)
+  cat(out, file = paste0(questions_path, "/question_data.json"))
+}
+
+#' Generate powerpoint slides from rally content
+#'
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param base_path location of base path where outputs should be stored
+#' @importFrom yaml yaml.load
+#' @importFrom officer read_pptx layout_summary
+#' @importFrom whisker whisker.render
+#' @export
+gen_ppt <- function(content, base_path = get_rally_base_path()) {
+  ppt_tmpl <- yaml::yaml.load_file(system.file("template_ppt.yaml", package = "rallyengine"))
+  ppt <- officer::read_pptx( system.file("template.pptx", package = "rallyengine"))
+
+  officer::layout_summary(ppt)
+
+  for (output in content) {
+    # output <- content[[1]]
+    fig_num <- 1
+    tbl_num <- 1
+
+    for (el in ppt_tmpl) {
+      # el <- ppt_tmpl[[3]]
+      ct <- el$content
+      if (ct$type == "title") {
+        ct <- ppt_tmpl[[1]]$content
+        ct <- lapply(ct, function(a) whisker::whisker.render(a, output))
+        ppt <- add_title_slide(ppt, ct)
+      } else if (ct$type == "paragraph") {
+        hd <- whisker::whisker.render(el$header, output)
+        if (!is.null(ct$id)) {
+          lns <- output[[ct$id]]
+        } else {
+          lns <- whisker::whisker.render(ct$lines, output)
+          # lns <- gsub("%", "AAA", lns)
+          # lns <- gsub("\\+", "BBB", lns)
+          lns <- gsub("/\\-", "_", lns)
+        }
+        ppt <- add_paragraph_slide(ppt, lns, hd)
+      } else if (ct$type == "detail") {
+        dat <- output[[ct$id]]
+        for (dt in dat) {
+          # dt <- dat[[1]]
+          hd <- whisker::whisker.render(el$header, output)
+          if (!is.null(dt$header) && dt$header != "")
+            hd <- paste0(hd, ": ", dt$header)
+          for (dct in dt$content) {
+            # dct <- dt$content[[1]]
+            if (inherits(dct, "osf_bulletlist")) {
+              ppt <- add_paragraph_slide(ppt, dct, hd)
+            } else if (inherits(dct, "osf_text")) {
+              ppt <- add_paragraph_slide(ppt, dct[[1]], hd)
+            } else if (inherits(dct, c("osf_figure", "osf_table"))) {
+              ppt <- add_fig_tbl_slide(ppt, dct, hd)
+            }
+          }
+        }
+      }
+    }
+
+    ppt_path <- file.path(base_path, "ppt")
+    if (!dir.exists(ppt_path))
+      dir.create(ppt_path)
+
+    filename <- paste0(ppt_path, "/Rally-", output$number, "_report.pptx")
+    print(ppt, target = filename) %>%
+      invisible()
+    # system(paste("open", filename))
+  }
+}
