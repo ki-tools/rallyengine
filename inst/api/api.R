@@ -53,7 +53,7 @@ check_update <- function(id) {
   if (!resolved(status[[id]]$f)) {
     readLines(status[[id]]$tf, warn = FALSE)
   } else {
-    content <<- value(f)
+    content <<- value(status[[id]]$f)
     res <- readLines(status[[id]]$tf, warn = FALSE)
     c(res, "FINISHED")
   }
