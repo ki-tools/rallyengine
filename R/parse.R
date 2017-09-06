@@ -374,7 +374,7 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
   prev_dig <- if (file.exists(cache_dig_file)) readLines(cache_dig_file, warn = FALSE) else ""
   if (prev_dig == cur_dig && file.exists(dig_file) && !force) {
     message("  Note: Text contents of wiki unchanged from last run...",
-      "\n    Reading from cache...",
+      " Reading from cache...",
       "\n    To force re-processing, call with force=TRUE")
     return(readRDS(dig_file))
   }
@@ -419,6 +419,7 @@ parse_wikis <- function(rally_ids, force = FALSE) {
   res <- lapply(rally_ids, function(x) {
     message("---- parsing wiki for rally ID: ", x, " ----")
     parse_wiki(x, force = force)
+    message("")
   })
   names(res) <- rally_ids
   class(res) <- c("list", "rallies_content")
