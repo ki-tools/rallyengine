@@ -17,7 +17,8 @@ $(document).ready(function(){
           } else {
             status_loop();
           }
-          $('#status').html(out.join('<br>'))
+          var txt = anchorme(out.join("<br>"), { attributes: [{ name: "target", value: "blank"}]});
+          $('#status').html(txt);
         }, 300);
       };
       status_loop();

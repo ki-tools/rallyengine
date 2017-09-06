@@ -417,7 +417,8 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
 
 parse_wikis <- function(rally_ids, force = FALSE) {
   res <- lapply(rally_ids, function(x) {
-    message("---- parsing wiki for rally ID: ", x, " ----")
+    message("---- parsing wiki for rally ID: ", x,
+      " (https://osf.io/", x, "/wiki/home/?edit&menu) ----")
     parse_wiki(x, force = force)
     message("")
   })
