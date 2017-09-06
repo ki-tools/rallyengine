@@ -28,28 +28,31 @@ get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
   parse_wikis(rally_ids, force = force)
 }
 
-#' Open master wikis in web browser for a given set of rally OSF ids
-#'
-#' @param rally_ids vector of OSF component ids pointing to indivual rally spaces
-#' @param edit should the pages be opened in edit view?
-#' @importFrom utils browseURL
+#' Get rally content directly from cache
+#' @param base_path location of base path where outputs should be stored
 #' @export
-browse_templates <- function(rally_ids, edit = TRUE) {
-  urls <- paste0("https://osf.io/", rally_ids, "/wiki/home/")
-  if (edit)
-    urls <- paste0(urls, "?edit&menu")
-  sapply(urls, browseURL)
+get_rally_content_cache <- function(base_path = get_rally_base_path()) {
+  cache_path <- file.path(base_path, "cache")
+  if (!dir.exists(cache_path))
+    stop("No content in cache. Please run get_rally_content()")
+  ff <- list.files(cache_path, pattern = "\\.rds", full.names = TRUE)
+  nms <- gsub("\\.rds", "", basename(ff))
+  res <- lapply(ff, readRDS)
+  names(res) <- nms
+  res
 }
+
 
 #' Generate data for overview pages
 #'
-#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}, or a single element of this
 #' @param base_path location of base path where outputs should be stored
+#' @param outfile should the output be written to a JSON file? If FALSE, a JSON string will be returned instead.
 #' @importFrom jsonlite toJSON
 #' @export
-gen_overview_data <- function(content, base_path = get_rally_base_path()) {
-  for (x in content) {
-    keep <- c("number", "title", "background", "motivation", "focus", "timeline_nice",
+gen_overview_data <- function(content, base_path = get_rally_base_path(), outfile = TRUE) {
+  gen_single <- function(x) {
+    keep <- c("number", "osf_id", "title", "background", "motivation", "focus", "timeline_nice",
       "deliverables", "participants", "data_list", "data_outcomes", "data_predictors",
       "methods", "findings", "value", "next_steps")
     x <- x[keep]
@@ -58,13 +61,29 @@ gen_overview_data <- function(content, base_path = get_rally_base_path()) {
       x[[nm]] <- paste(unlist(lapply(x[[nm]][[1]],
         function(a) paste(a, collapse = "\n"))), collapse = "\n\n")
     }
-    out <- jsonlite::toJSON(x, auto_unbox = TRUE, pretty = TRUE)
-    # out <- paste0("var data = ", out)
+    jsonlite::toJSON(x, auto_unbox = TRUE, pretty = TRUE)
+  }
 
-    overview_path <- file.path(base_path, "overview")
-    if (!dir.exists(overview_path))
-      dir.create(overview_path)
-    cat(out, file = paste0(overview_path, "/", x$number, ".json"))
+  if (inherits(content, "rally_content")) {
+    out <- gen_single(content)
+    if (outfile) {
+      overview_path <- file.path(base_path, "overview")
+      if (!dir.exists(overview_path))
+        dir.create(overview_path)
+      cat(out, file = paste0(overview_path, "/", content$osf_id, ".json"))
+    } else {
+      return(out)
+    }
+  } else {
+    if (!outfile)
+      stop("Must specify outfile = TRUE if generating overview data for multiple rallies.")
+    for (x in content) {
+      out <- gen_single(x)
+      overview_path <- file.path(base_path, "overview")
+      if (!dir.exists(overview_path))
+        dir.create(overview_path)
+      cat(out, file = paste0(overview_path, "/", x$osf_id, ".json"))
+    }
   }
 }
 
@@ -72,12 +91,14 @@ gen_overview_data <- function(content, base_path = get_rally_base_path()) {
 #'
 #' @param content list of rally template content obtained from \code{\link{get_rally_content}}
 #' @param base_path location of base path where outputs should be stored
+#' @param outfile should the output be written to a JSON file? If FALSE, a JSON string will be returned instead.
 #' @export
-gen_dashboard_data <- function(content, base_path = get_rally_base_path()) {
+gen_dashboard_data <- function(content, base_path = get_rally_base_path(), outfile = TRUE) {
   res <- unname(lapply(content, function(a) {
-    a <- a[c("number", "title", "tags", "participants", "timeline", "focus")]
+    a <- a[c("number", "osf_id", "title", "tags", "participants", "timeline", "focus")]
     a$tags <- paste(a$tags, collapse = ", ")
-    a$overview_link <- paste0("overview.html?id=", a$number)
+    a$osf_link <- paste0("http://osf.io/", a$osf_id)
+    a$overview_link <- paste0("overview.html?id=", a$osf_id)
     a$report_link <- paste0("ppt/Rally-", a$number, "_report.pptx")
     a
   }))
@@ -85,19 +106,24 @@ gen_dashboard_data <- function(content, base_path = get_rally_base_path()) {
   out <- as.character(jsonlite::toJSON(res, auto_unbox = TRUE, pretty = TRUE))
   # out <- paste0("var data = ", out)
 
-  dashboard_path <- base_path # for now...
-  if (!dir.exists(dashboard_path))
-    dir.create(dashboard_path)
-  cat(out, file = paste0(dashboard_path, "/rally_data.json"))
+  if (outfile) {
+    dashboard_path <- base_path # for now...
+    if (!dir.exists(dashboard_path))
+      dir.create(dashboard_path)
+    cat(out, file = paste0(dashboard_path, "/rally_data.json"))
+  } else {
+    return (out)
+  }
 }
 
 #' Generate questions page data from rally content
 #'
 #' @param content list of rally template content obtained from \code{\link{get_rally_content}}
 #' @param base_path location of base path where outputs should be stored
+#' @param outfile should the output be written to a JSON file? If FALSE, a JSON string will be returned instead.
 #' @importFrom dplyr bind_rows data_frame group_by summarise
 #' @export
-gen_questions_data <- function(content, base_path = get_rally_base_path()) {
+gen_questions_data <- function(content, base_path = get_rally_base_path(), outfile = TRUE) {
   tmp <- dplyr::bind_rows(lapply(content, function(a) {
     dplyr::data_frame(
       rally_id = a$number,
@@ -119,11 +145,15 @@ gen_questions_data <- function(content, base_path = get_rally_base_path()) {
 
   out <- as.character(jsonlite::toJSON(quests, auto_unbox = TRUE, pretty = TRUE))
 
-  questions_path <- base_path # for now...
-  if (!dir.exists(questions_path))
-    dir.create(questions_path)
-  # out <- paste0("var data = ", out)
-  cat(out, file = paste0(questions_path, "/question_data.json"))
+  if (outfile) {
+    questions_path <- base_path # for now...
+    if (!dir.exists(questions_path))
+      dir.create(questions_path)
+    # out <- paste0("var data = ", out)
+    cat(out, file = paste0(questions_path, "/question_data.json"))
+  } else {
+    return(out)
+  }
 }
 
 #' Generate powerpoint slides from rally content
