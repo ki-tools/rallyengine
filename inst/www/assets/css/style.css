@@ -116,3 +116,11 @@ strong {
   display: none;
 }
 
+#status {
+  background: rgba(0, 0, 0, 0.75);
+  color: lightblue;
+  font-family: monospace;
+  text-align: left;
+  padding: 15px;
+  margin-top: 40px;
+}
