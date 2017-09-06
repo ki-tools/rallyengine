@@ -79,7 +79,7 @@ table.dataTable thead th.sorting_desc:after {
   top: 20px;
   left: 8px;
   display: block;
-  font-family: FontAwesome;
+  font-family: icomoon;
 }
 
 table.dataTable thead th.sorting:after {
@@ -130,7 +130,7 @@ div.dataTables_paginate a.previous:before {
   top: 8px;
   left: 10px;
   display: block;
-  font-family: FontAwesome;
+  font-family: icomoon;
 }
 
 div.dataTables_paginate a.next:after,
@@ -139,7 +139,7 @@ div.dataTables_paginate a.last:after {
   top: 8px;
   right: 10px;
   display: block;
-  font-family: FontAwesome;
+  font-family: icomoon;
 }
 
 div.dataTables_paginate a.first:before {
@@ -180,7 +180,7 @@ div.dataTables_paginate li.previous a:before {
   top: 6px;
   left: 10px;
   display: block;
-  font-family: FontAwesome;
+  font-family: icomoon;
 }
 
 div.dataTables_paginate li.next a:after,
@@ -189,7 +189,7 @@ div.dataTables_paginate li.last a:after {
   top: 6px;
   right: 10px;
   display: block;
-  font-family: FontAwesome;
+  font-family: icomoon;
 }
 
 div.dataTables_paginate li.first a:before {

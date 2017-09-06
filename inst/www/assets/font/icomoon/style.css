@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?t5d1cs');
-  src:  url('fonts/icomoon.eot?t5d1cs#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?t5d1cs') format('truetype'),
-    url('fonts/icomoon.woff?t5d1cs') format('woff'),
-    url('fonts/icomoon.svg?t5d1cs#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?otz4zq');
+  src:  url('fonts/icomoon.eot?otz4zq#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?otz4zq') format('truetype'),
+    url('fonts/icomoon.woff?otz4zq') format('woff'),
+    url('fonts/icomoon.svg?otz4zq#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-sort:before {
+  content: "\f0dc";
+}
+.icon-unsorted:before {
+  content: "\f0dc";
+}
+.icon-sort-desc:before {
+  content: "\f0dd";
+}
+.icon-sort-down:before {
+  content: "\f0dd";
+}
+.icon-sort-asc:before {
+  content: "\f0de";
+}
+.icon-sort-up:before {
+  content: "\f0de";
+}
 .icon-external-link-square:before {
   content: "\f14c";
 }
