@@ -5,8 +5,11 @@ $(document).ready(function(){
     // var id = urlParams.get('id').toUpperCase();
     var id = urlParams.get('id')
 
-    // $.getJSON('overview/' + id + '.json', function(data) {
-    $.getJSON('http://localhost:8000/overview?id=' + id, function(data) {
+    var SERVER = 'overview/' + id + '.json';
+    if (window.RALLY_API_SERVER !== undefined) {
+      SERVER = window.RALLY_API_SERVER + '/overview?id=' + id;
+    }
+    $.getJSON(SERVER, function(data) {
       var mrk = ['background', 'motivation', 'focus', 'data_outcomes', 'data_predictors', 'methods', 'findings', 'value', 'deliverables'];
       mrk.forEach(function(nm) {
         if ($.isArray(data[nm])) {

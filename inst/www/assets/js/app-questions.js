@@ -7,8 +7,11 @@ var q5 = {
 }
 
 $(document).ready(function(){
-  // $.getJSON('question_data.json', function(data) {
-  $.getJSON('http://localhost:8000/questions', function(data) {
+  var SERVER = 'question_data.json';
+  if (window.RALLY_API_SERVER !== undefined) {
+    SERVER = window.RALLY_API_SERVER + '/questions';
+  }
+  $.getJSON(SERVER, function(data) {
 
     var nq = 0;
     data.map(function(d) { if (d.rally_link !== undefined) { nq++;} })

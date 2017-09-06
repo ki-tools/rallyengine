@@ -1,14 +1,14 @@
-
 $(document).ready(function(){
+  SERVER = window.RALLY_API_SERVER;
 
   $('#parse-button').click(function() {
     $('#parse-button').addClass('disabled');
     $('#status').removeClass('hidden');
     $("#status").html('')
-    $.getJSON('http://localhost:8000/update', function(id) {
+    $.getJSON(SERVER + '/update', function(id) {
       out = [];
       function status_loop() {
-        $.getJSON('http://localhost:8000/check_update?id=' + id, function(data) {
+        $.getJSON(SERVER + '/check_update?id=' + id, function(data) {
           out = data;
         })
         setTimeout(function() {

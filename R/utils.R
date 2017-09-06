@@ -55,8 +55,9 @@ get_latests <- function(objs) {
 
 
 #' Ensure environment is set up (one-time only)
+#' @param server optional specification of API server address
 #' @export
-init_rally_engine <- function() {
+init_rally_engine <- function(server = Sys.getenv("RALLY_API_SERVER")) {
   message("Checking OSF_PAT environment variable...")
   get_osf_pat()
   message("Checking RALLY_BASE_PATH environment variable...")
@@ -66,6 +67,8 @@ init_rally_engine <- function() {
     from = system.file("www", package = "rallyengine"),
     to = base_path
   )
+  if (!is.null(server) && server != "" && is.character(server))
+    cat(paste0("window.RALLY_API_SERVER = ", server, ";"), file = file.path(base_path, "config.js"))
   cat("", file = file.path(base_path, ".initialized"))
 
   message("You are good to go!")

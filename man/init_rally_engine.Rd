@@ -4,7 +4,10 @@
 \alias{init_rally_engine}
 \title{Ensure environment is set up (one-time only)}
 \usage{
-init_rally_engine()
+init_rally_engine(server = Sys.getenv("RALLY_API_SERVER"))
+}
+\arguments{
+\item{server}{optional specification of API server address}
 }
 \description{
 Ensure environment is set up (one-time only)

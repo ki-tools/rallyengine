@@ -1,6 +1,9 @@
 $( function() {
-  // $.getJSON('rally_data.json', function(data) {
-  $.getJSON('http://localhost:8000/dashboard', function(data) {
+  var SERVER = 'rally_data.json';
+  if (window.RALLY_API_SERVER !== undefined) {
+    SERVER = window.RALLY_API_SERVER + '/dashboard';
+  }
+  $.getJSON(SERVER, function(data) {
 
     var ncomplete = 0;
     for (var i = 0; i < data.length; i++) {
