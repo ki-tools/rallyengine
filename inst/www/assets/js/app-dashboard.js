@@ -1,5 +1,6 @@
 $( function() {
-  $.getJSON('rally_data.json', function(data) {
+  // $.getJSON('rally_data.json', function(data) {
+  $.getJSON('http://localhost:8000/dashboard', function(data) {
 
     var ncomplete = 0;
     for (var i = 0; i < data.length; i++) {
