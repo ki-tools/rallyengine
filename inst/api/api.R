@@ -27,7 +27,7 @@ update_content <- function() {
 
   tf <- tempfile()
   f <- future({
-    capture.output(get_rally_content(), type = "message", file = tf)
+    capture.output(tmp <- get_rally_content(), type = "message", file = tf)
   })
   # f <- future({
   #   res <- 1
@@ -53,7 +53,9 @@ check_update <- function(id) {
   if (!resolved(status[[id]]$f)) {
     readLines(status[[id]]$tf, warn = FALSE)
   } else {
-    content <<- value(status[[id]]$f)
+    # for some reason we can't get the value of the future so we'll read from cache instead
+    # content <<- value(status[[id]]$f)
+    content <- get_rally_content_cache()
     res <- readLines(status[[id]]$tf, warn = FALSE)
     c(res, "FINISHED")
   }
