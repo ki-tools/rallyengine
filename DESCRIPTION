@@ -12,8 +12,6 @@ Imports:
     magrittr,
     jsonlite,
     base64enc,
-    readr,
-    readxl,
     dplyr,
     officer,
     png,
