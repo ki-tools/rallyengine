@@ -18,6 +18,42 @@ get_rally_base_path <- function() {
   rally_base
 }
 
+#' Open master wikis in web browser for a given set of rally OSF ids
+#'
+#' @param rally_ids vector of OSF component ids pointing to indivual rally spaces
+#' @param edit should the pages be opened in edit view?
+#' @importFrom utils browseURL
+#' @export
+browse_templates <- function(rally_ids, edit = TRUE) {
+  urls <- paste0("https://osf.io/", rally_ids, "/wiki/home/")
+  if (edit)
+    urls <- paste0(urls, "?edit&menu")
+  sapply(urls, browseURL)
+}
+
+#' Get latest rally data from cache (compared to supplied input object)
+#' @param obj an element of the list returned from \code{\link{get_rally_content}}
+#' @export
+get_latest <- function(obj) {
+  cur_dig <- attr(obj, "digest")
+  dig_file <- file.path(get_rally_base_path(), "cache", paste0(obj$osf_id, ".txt"))
+  obj_file <- file.path(get_rally_base_path(), "cache", paste0(obj$osf_id, ".rds"))
+  saved_dig <- readLines(dig_file, warn = FALSE)
+  if (saved_dig != cur_dig)
+    obj <- readRDS(obj_file)
+  obj
+}
+
+#' Get latest rally data from cache (compared to supplied input objects)
+#' @param objs a list of rally output objects obtained from \code{\link{get_rally_content}}
+#' @export
+get_latests <- function(objs) {
+  for (ii in seq_along(objs))
+    objs[[ii]] <- get_latest(objs[[ii]])
+  objs
+}
+
+
 #' Ensure environment is set up (one-time only)
 #' @export
 init_rally_engine <- function() {
