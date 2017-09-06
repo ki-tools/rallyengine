@@ -402,6 +402,10 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
   output$timeline_nice <- lapply(output$timeline, function(a)
     gsub("  ", " ", format(a, "%B %e, %Y")))
 
+  output$osf_id <- rally_id
+
+  class(output) <- c("list", "rally_content")
+
   message("caching to: ", dig_file, "...")
   cat(cur_dig, file = cache_dig_file)
   # attach digest to data so that web service can check whether it needs to load updates
@@ -417,5 +421,6 @@ parse_wikis <- function(rally_ids, force = FALSE) {
     parse_wiki(x, force = force)
   })
   names(res) <- rally_ids
+  class(res) <- c("list", "rallies_content")
   res
 }
