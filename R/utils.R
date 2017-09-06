@@ -68,7 +68,7 @@ init_rally_engine <- function(server = Sys.getenv("RALLY_API_SERVER")) {
     to = base_path
   )
   if (!is.null(server) && server != "" && is.character(server))
-    cat(paste0("window.RALLY_API_SERVER = ", server, ";"), file = file.path(base_path, "config.js"))
+    cat(paste0("window.RALLY_API_SERVER = '", server, "';"), file = file.path(base_path, "config.js"))
   cat("", file = file.path(base_path, ".initialized"))
 
   message("You are good to go!")
