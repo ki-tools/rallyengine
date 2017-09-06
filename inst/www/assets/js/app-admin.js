@@ -12,14 +12,15 @@ $(document).ready(function(){
           out = data;
         })
         setTimeout(function() {
-          if (out[out.length - 1] !== "FINISHED") {
+          if (out[out.length - 1] === "FINISHED") {
+            $('#parse-button').removeClass('disabled');
+          } else {
             status_loop();
           }
           $('#status').html(out.join('<br>'))
         }, 300);
       };
       status_loop();
-      $('#parse-button').removeClass('disabled');
     })
     .done(function() {
       console.log('parse update initiated...');
