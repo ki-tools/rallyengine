@@ -26,20 +26,20 @@ update_content <- function() {
   id <- substr(digest::digest(Sys.time()), 1, 6)
 
   tf <- tempfile()
-  # f <- future({
-  #   capture.output(get_rally_content(), type = "message", file = tf)
-  # })
   f <- future({
-    res <- 1
-    capture.output({
-      for (i in 1:10) {
-        Sys.sleep(1)
-        message(i)
-        res <- res + 1
-      }
-    }, file = tf, type = "message")
-    res
+    capture.output(get_rally_content(), type = "message", file = tf)
   })
+  # f <- future({
+  #   res <- 1
+  #   capture.output({
+  #     for (i in 1:10) {
+  #       Sys.sleep(1)
+  #       message(i)
+  #       res <- res + 1
+  #     }
+  #   }, file = tf, type = "message")
+  #   res
+  # })
   status[[id]] <<- list(f = f, tf = tf)
   jsonlite::toJSON(id, auto_unbox = TRUE)
 }
@@ -53,7 +53,7 @@ check_update <- function(id) {
   if (!resolved(status[[id]]$f)) {
     readLines(status[[id]]$tf, warn = FALSE)
   } else {
-    # content <<- value(f)
+    content <<- value(f)
     res <- readLines(status[[id]]$tf, warn = FALSE)
     c(res, "FINISHED")
   }
@@ -86,9 +86,17 @@ get_overview_data <- function(id) {
 
 # load_all()
 # library(plumber)
-# # r <- plumb("inst/api/api.R")
+# r <- plumb("inst/api/api.R")
+# r$run(port = 8000)
+
+# library(plumber)
+# Sys.setenv(RALLY_API_SERVER = "")
 # r <- plumb(system.file("api/api.R", package = "rallyengine"))
-# r$run(port=8000)
+# r$run(host = "hbghdkirallyengine.exaptive.city", port = 8000)
+
+# export OSF_PAT=
+# export RALLY_BASE_PATH=~/html
+# export RALLY_API_SERVER=http://hbghdkirallyengine.exaptive.city:8000
 
 # curl localhost:8000/questions
 # curl localhost:8000/dashboard

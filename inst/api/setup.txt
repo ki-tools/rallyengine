@@ -1,0 +1,28 @@
+
+
+FROM trestletech/plumber
+MAINTAINER Ryan Hafen <rhafen@gmail.com>
+
+RUN apt-get update
+RUN apt-get -y install libxml2-dev
+RUN R -e "devtools::install_github('hbgdki/rallyengine', dependencies = TRUE)"
+
+CMD ["/usr/local/lib/R/site-library/rallyengine/api/api.R"]
+
+
+
+docker build -t rallyengine .
+docker run --rm -p 8000:8000 -v $HOME/html:/html --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT rallyengine
+
+
+
+
+
+docker run -it --rm -v $HOME/html:/html --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT --entrypoint /bin/bash trestletech/plumber
+docker run --rm -p 8000:8000 -v `pwd`/api.R:/plumber.R trestletech/plumber /plumber.R
+
+curl localhost:8000/questions
+curl localhost:8000/dashboard
+curl localhost:8000/overview?id=35y4a
+curl localhost:8000/update
+curl localhost:8000/check_update?id=
