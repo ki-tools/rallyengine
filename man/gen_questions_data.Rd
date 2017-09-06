@@ -4,12 +4,15 @@
 \alias{gen_questions_data}
 \title{Generate questions page data from rally content}
 \usage{
-gen_questions_data(content, base_path = get_rally_base_path())
+gen_questions_data(content, base_path = get_rally_base_path(),
+  outfile = TRUE)
 }
 \arguments{
 \item{content}{list of rally template content obtained from \code{\link{get_rally_content}}}
 
 \item{base_path}{location of base path where outputs should be stored}
+
+\item{outfile}{should the output be written to a JSON file? If FALSE, a JSON string will be returned instead.}
 }
 \description{
 Generate questions page data from rally content

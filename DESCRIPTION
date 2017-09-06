@@ -1,6 +1,6 @@
 Package: rallyengine
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
+Title: Knowledge Integration Rally Engine
+Version: 0.0.0.9001
 Authors@R: person("Ryan", "Hafen", email = "ryan.hafen@gmail.com", role = c("aut", "cre"))
 Description: Engine for parsing rally templates and generating rally outputs.
 Depends: R (>= 3.4.1)

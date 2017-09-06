@@ -4,12 +4,15 @@
 \alias{gen_overview_data}
 \title{Generate data for overview pages}
 \usage{
-gen_overview_data(content, base_path = get_rally_base_path())
+gen_overview_data(content, base_path = get_rally_base_path(),
+  outfile = TRUE)
 }
 \arguments{
-\item{content}{list of rally template content obtained from \code{\link{get_rally_content}}}
+\item{content}{list of rally template content obtained from \code{\link{get_rally_content}}, or a single element of this}
 
 \item{base_path}{location of base path where outputs should be stored}
+
+\item{outfile}{should the output be written to a JSON file? If FALSE, a JSON string will be returned instead.}
 }
 \description{
 Generate data for overview pages

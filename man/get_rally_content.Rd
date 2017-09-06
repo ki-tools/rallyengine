@@ -18,6 +18,7 @@ Get and parse full rally template data for a either a base rally OSF id or a vec
 }
 \examples{
 \dontrun{
+# init_rally_engine() # one time only
 rally_ids <- get_rally_ids()
 content <- get_rally_content(rally_ids = rally_ids)
 gen_overview_data(content)
