@@ -4,12 +4,17 @@
 \alias{gen_ppt}
 \title{Generate powerpoint slides from rally content}
 \usage{
-gen_ppt(content, base_path = get_rally_base_path())
+gen_ppt(content, base_path = get_rally_base_path(), force = FALSE,
+  in_api = FALSE)
 }
 \arguments{
 \item{content}{list of rally template content obtained from \code{\link{get_rally_content}}}
 
 \item{base_path}{location of base path where outputs should be stored}
+
+\item{force}{should ppt output be forced to be generated even if text content matches?}
+
+\item{in_api}{Is this function being called from an API? If so, an extra message with a link will be printed.}
 }
 \description{
 Generate powerpoint slides from rally content

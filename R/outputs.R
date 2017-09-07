@@ -161,13 +161,14 @@ gen_questions_data <- function(content, base_path = get_rally_base_path(), outfi
 #' @param content list of rally template content obtained from \code{\link{get_rally_content}}
 #' @param base_path location of base path where outputs should be stored
 #' @param force should ppt output be forced to be generated even if text content matches?
+#' @param in_api Is this function being called from an API? If so, an extra message with a link will be printed.
 #' @importFrom yaml yaml.load
 #' @importFrom officer read_pptx layout_summary
 #' @importFrom whisker whisker.render
 #' @export
-gen_ppt <- function(content, base_path = get_rally_base_path(), force = FALSE) {
+gen_ppt <- function(content, base_path = get_rally_base_path(), force = FALSE, in_api = FALSE) {
   for (output in content) {
-    res <- try(gen_ppt_single(output, base_path = base_path, force = force))
+    res <- try(gen_ppt_single(output, base_path = base_path, force = force, in_api = in_api))
     if (inherits(res, "try-error"))
       message(as.character(res))
     message("")

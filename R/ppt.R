@@ -120,7 +120,7 @@ add_fig_tbl_slide <- function(ppt, dct, hd, fig_num, tbl_num) {
   ppt
 }
 
-gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FALSE) {
+gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FALSE, in_api = FALSE) {
   ppt_path <- file.path(base_path, "ppt")
   if (!dir.exists(ppt_path))
     dir.create(ppt_path)
@@ -187,6 +187,11 @@ gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FA
         }
       }
     }
+  }
+
+  if (in_api) {
+    link <- paste0("ppt/Rally-", output$number, "-", output$osf_id, "_report.pptx")
+    message("link: <a href='", link, "' target='_blank'>", link, "</a>")
   }
 
   cat(cur_dig, file = dig_file)

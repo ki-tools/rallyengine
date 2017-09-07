@@ -93,7 +93,7 @@ update_ppt <- function() {
 
   tf <- tempfile()
   f <- future({
-    capture.output(tmp <- gen_ppt(content), type = "message", file = tf)
+    capture.output(tmp <- gen_ppt(content, in_api = TRUE), type = "message", file = tf)
   })
   status[[id]] <<- list(f = f, tf = tf)
   jsonlite::toJSON(id, auto_unbox = TRUE)
