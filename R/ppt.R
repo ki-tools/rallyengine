@@ -139,6 +139,10 @@ gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FA
     message("  Note: Text contents of wiki unchanged from last run...",
       " Not processing...",
       "\n    To force re-processing, call with force=TRUE")
+    if (in_api) {
+      link <- paste0("ppt/Rally-", output$number, "-", output$osf_id, "_report.pptx")
+      message("link: <a href='", link, "' target='_blank'>", link, "</a>")
+    }
     return(invisible())
   }
 
