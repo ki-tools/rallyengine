@@ -160,67 +160,16 @@ gen_questions_data <- function(content, base_path = get_rally_base_path(), outfi
 #'
 #' @param content list of rally template content obtained from \code{\link{get_rally_content}}
 #' @param base_path location of base path where outputs should be stored
+#' @param force should ppt output be forced to be generated even if text content matches?
 #' @importFrom yaml yaml.load
 #' @importFrom officer read_pptx layout_summary
 #' @importFrom whisker whisker.render
 #' @export
-gen_ppt <- function(content, base_path = get_rally_base_path()) {
-  ppt_tmpl <- yaml::yaml.load_file(system.file("template_ppt.yaml", package = "rallyengine"))
-  ppt <- officer::read_pptx( system.file("template.pptx", package = "rallyengine"))
-
-  officer::layout_summary(ppt)
-
+gen_ppt <- function(content, base_path = get_rally_base_path(), force = FALSE) {
   for (output in content) {
-    # output <- content[[1]]
-    fig_num <- 1
-    tbl_num <- 1
-
-    for (el in ppt_tmpl) {
-      # el <- ppt_tmpl[[3]]
-      ct <- el$content
-      if (ct$type == "title") {
-        ct <- ppt_tmpl[[1]]$content
-        ct <- lapply(ct, function(a) whisker::whisker.render(a, output))
-        ppt <- add_title_slide(ppt, ct)
-      } else if (ct$type == "paragraph") {
-        hd <- whisker::whisker.render(el$header, output)
-        if (!is.null(ct$id)) {
-          lns <- output[[ct$id]]
-        } else {
-          lns <- whisker::whisker.render(ct$lines, output)
-          # lns <- gsub("%", "AAA", lns)
-          # lns <- gsub("\\+", "BBB", lns)
-          lns <- gsub("/\\-", "_", lns)
-        }
-        ppt <- add_paragraph_slide(ppt, lns, hd)
-      } else if (ct$type == "detail") {
-        dat <- output[[ct$id]]
-        for (dt in dat) {
-          # dt <- dat[[1]]
-          hd <- whisker::whisker.render(el$header, output)
-          if (!is.null(dt$header) && dt$header != "")
-            hd <- paste0(hd, ": ", dt$header)
-          for (dct in dt$content) {
-            # dct <- dt$content[[1]]
-            if (inherits(dct, "osf_bulletlist")) {
-              ppt <- add_paragraph_slide(ppt, dct, hd)
-            } else if (inherits(dct, "osf_text")) {
-              ppt <- add_paragraph_slide(ppt, dct[[1]], hd)
-            } else if (inherits(dct, c("osf_figure", "osf_table"))) {
-              ppt <- add_fig_tbl_slide(ppt, dct, hd)
-            }
-          }
-        }
-      }
-    }
-
-    ppt_path <- file.path(base_path, "ppt")
-    if (!dir.exists(ppt_path))
-      dir.create(ppt_path)
-
-    filename <- paste0(ppt_path, "/Rally-", output$number, "_report.pptx")
-    print(ppt, target = filename) %>%
-      invisible()
-    # system(paste("open", filename))
+    res <- try(gen_ppt_single(output, base_path = base_path, force = force))
+    if (inherits(res, "try-error"))
+      message(as.character(res))
+    message("")
   }
 }

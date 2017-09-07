@@ -53,20 +53,30 @@ add_paragraph_slide <- function(ppt, dct, hd) {
   ppt
 }
 
-add_fig_tbl_slide <- function(ppt, dct, hd) {
+add_fig_tbl_slide <- function(ppt, dct, hd, fig_num, tbl_num) {
+
+  ppt <- officer::add_slide(ppt, "Full Width Head + Copy - Text Only", "BMGF_HBGDki_Rally") %>%
+    officer::ph_with_text(type = "title", hd)
+  # ppt <- add_slide(ppt, "Title Only", master = "Office Theme") %>%
+  #   ph_with_text(type = "title", hd)
+
   type <- "Figure"
   cur_num <- fig_num
   if (inherits(dct, "osf_table")) {
     type <- "Table"
     cur_num <- tbl_num
-    tbl_num <- tbl_num + 1
+    tbl_num <<- tbl_num + 1
   } else if (inherits(dct, "osf_figure")) {
-    fig_num <- fig_num + 1
+    fig_num <<- fig_num + 1
   }
 
-  f <- tempfile(fileext = paste0(".", dct$ext))
-  writeBin(base64enc::base64decode(dct$base64), f)
-  dims <- attr(png::readPNG(f), "dim")[1:2] / 72
+  if (!is.null(dct$base64)) {
+    f <- tempfile(fileext = paste0(".", dct$ext))
+    writeBin(base64enc::base64decode(dct$base64), f)
+    dims <- attr(png::readPNG(f), "dim")[1:2] / 72
+  } else {
+    dims <- c(500, 500)
+  }
 
   asp <- dims[1] / dims[2]
   # if figure aspect ratio is > 0.7, place the caption to the right of the plot
@@ -95,12 +105,11 @@ add_fig_tbl_slide <- function(ppt, dct, hd) {
   }
   capt <- paste0(type, " ", cur_num, ". ", capt_txt)
 
-  ppt <- officer::add_slide(ppt, "Full Width Head + Copy - Text Only", "BMGF_HBGDki_Rally") %>%
-    officer::ph_with_text(type = "title", hd)
-  # ppt <- add_slide(ppt, "Title Only", master = "Office Theme") %>%
-  #   ph_with_text(type = "title", hd)
-  ppt <- officer::ph_with_img_at(ppt, f, left = fig_left, top = fig_top,
-    width = dims[2] * mlt, height = dims[1] * mlt)
+  if (!is.null(dct$base64)) {
+    ppt <- officer::ph_with_img_at(ppt, f, left = fig_left, top = fig_top,
+      width = dims[2] * mlt, height = dims[1] * mlt)
+  }
+
   nxt_id <- as.character(max(as.integer(slide_summary(ppt)$id)) + 1)
   ppt <- officer::ph_empty_at(ppt, left = cap_left, top = cap_top,
     height = cap_height, width = cap_width, template_type = "body")
@@ -109,4 +118,77 @@ add_fig_tbl_slide <- function(ppt, dct, hd) {
     style = officer::fp_text(bold = FALSE, font.size = 18.7))
 
   ppt
+}
+
+gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FALSE) {
+  ppt_path <- file.path(base_path, "ppt")
+  if (!dir.exists(ppt_path))
+    dir.create(ppt_path)
+
+  message("---- generating ppt for rally ID: ", output$osf_id,
+    " - https://osf.io/", x, "/wiki/home/?edit&menu (", output$number, ") ----")
+  cur_dig <- digest::digest(content)
+  dig_file <- paste0(ppt_path, "/Rally-", output$number, "-", output$osf_id, "_report.txt")
+  filename <- paste0(ppt_path, "/Rally-", output$number, "-", output$osf_id, "_report.pptx")
+  saved_dig <- ""
+  if (file.exists(dig_file))
+    saved_dig <- readLines(dig_file, warn = FALSE)
+  if (saved_dig == cur_dig) {
+    message("  Note: Text contents of wiki unchanged from last run...",
+      " Not processing...",
+      "\n    To force re-processing, call with force=TRUE")
+    return(invisible())
+  }
+
+  ppt_tmpl <- yaml::yaml.load_file(system.file("template_ppt.yaml", package = "rallyengine"))
+  ppt <- officer::read_pptx( system.file("template.pptx", package = "rallyengine"))
+  # officer::layout_summary(ppt)
+
+  # output <- content[[1]]
+  fig_num <- 1
+  tbl_num <- 1
+
+  for (el in ppt_tmpl) {
+    # el <- ppt_tmpl[[3]]
+    ct <- el$content
+    if (ct$type == "title") {
+      ct <- ppt_tmpl[[1]]$content
+      ct <- lapply(ct, function(a) whisker::whisker.render(a, output))
+      ppt <- add_title_slide(ppt, ct)
+    } else if (ct$type == "paragraph") {
+      hd <- whisker::whisker.render(el$header, output)
+      if (!is.null(ct$id)) {
+        lns <- output[[ct$id]]
+      } else {
+        lns <- whisker::whisker.render(ct$lines, output)
+        # lns <- gsub("%", "AAA", lns)
+        # lns <- gsub("\\+", "BBB", lns)
+        lns <- gsub("/\\-", "_", lns)
+      }
+      ppt <- add_paragraph_slide(ppt, lns, hd)
+    } else if (ct$type == "detail") {
+      dat <- output[[ct$id]]
+      for (dt in dat) {
+        # dt <- dat[[1]]
+        hd <- whisker::whisker.render(el$header, output)
+        if (!is.null(dt$header) && dt$header != "")
+          hd <- paste0(hd, ": ", dt$header)
+        for (dct in dt$content) {
+          # dct <- dt$content[[1]]
+          if (inherits(dct, "osf_bulletlist")) {
+            ppt <- add_paragraph_slide(ppt, dct, hd)
+          } else if (inherits(dct, "osf_text")) {
+            ppt <- add_paragraph_slide(ppt, dct[[1]], hd)
+          } else if (inherits(dct, c("osf_figure", "osf_table"))) {
+            ppt <- add_fig_tbl_slide(ppt, dct, hd, fig_num, tbl_num)
+          }
+        }
+      }
+    }
+  }
+
+  cat(digest::digest(content), file = dig_file)
+  print(ppt, target = filename) %>%
+    invisible()
+  # system(paste("open", filename))
 }

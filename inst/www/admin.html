@@ -43,6 +43,10 @@
       <div class="container center">
         <div class="row">
           <a class="waves-effect waves-light btn-large" id="parse-button">Parse OSF Master Templates</a>
+          <a class="waves-effect waves-light btn-large" id="ppt-button">Build PowerPoint Presentations</a>
+        </div>
+        <div class="row">
+          <p>Parsing the master templates automatically updates the contents of the rally dashboard views and the rally overview pages.</p>
         </div>
         <div class="row">
           <div id="status" class="hidden"></div>
@@ -58,46 +62,10 @@
       </div>
     </footer>
  -->
-    <script id="template" type="x-tmpl-mustache">
-      {{#.}}
-      <div class="card grid-item" data-participant="yonicd">
-        <div class="card-content rally-content">
-          <p class="rally-title">Rally {{number}}. {{title}}</p>
-          <p class="rally-item rally-focus"><span class="rally-bold">Focus:</span> {{focus}}</p>
-          <p class="rally-item rally-participant">
-            <span class="rally-bold">Participants:</span>
-            {{#participants}}
-              <a href="mailto:{{email}}">{{name}}</a>, <!--({{role}}, {{affiliation}});-->
-            {{/participants}}
-          </p>
-          <p class="rally-item"><span class="rally-bold">Tags:</span>
-            <span class="rally-tags">{{tags}}</span>
-          </p>
-          <p class="rally-item">
-          <span class="rally-bold">Start Date:</span> <span class="start-date">{{timeline.start}}</span> -
-          <span class="rally-bold">End Date:</span> {{timeline.end}}
-          </p>
-          <p class="rally-item">
-            <span class="rally-bold">Status:</span> <span class="rally-current">{{complete}}</span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{{overview_link}}" target="_blank">Rally Overview <span class="icon-external-link-square"></span></a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="{{report_link}}">Rally Report <span class="icon-external-link-square"></span></a>
-          </p>
-        </div>
-        <div class="card-reveal" style="display: none; -webkit-transform: translateY(0px);">
-          <span class="card-title grey-text text-darken-4">jsTree<i class="material-icons right">close</i></span>
-          <p>(full meta data to go here)</p>
-          </div>
-      </div>
-      {{/.}}
-    </script>
 
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="assets/js/jquery.min.js"></script>
-    <script type="text/javascript" src="assets/js/mustache.min.js"></script>
     <script type="text/javascript" src="assets/js/materialize.min.js"></script>
-    <script type="text/javascript" src="assets/js/isotope.min.js"></script>
     <script type="text/javascript" src="assets/js/anchorme.min.js"></script>
     <script type="text/javascript" src="assets/js/app-admin.js"></script>
   </body>

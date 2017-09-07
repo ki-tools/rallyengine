@@ -21,6 +21,31 @@ cors <- function(res) {
 }
 
 #* @serializer contentType list(type="application/json")
+#* @get /questions
+get_questions_data <- function() {
+  content <<- get_latests(content)
+  gen_questions_data(content, outfile = FALSE)
+}
+
+#* @serializer contentType list(type="application/json")
+#* @get /dashboard
+get_dashboard_data <- function() {
+  content <<- get_latests(content)
+  gen_dashboard_data(content, outfile = FALSE)
+}
+
+#* @serializer contentType list(type="application/json")
+#* @get /overview
+get_overview_data <- function(id) {
+  if (missing(id))
+    stop("Must provide an ID for an OSF rally space.", call. = FALSE)
+  if (!id %in% names(content))
+    stop("The ID '", id, "' is not a valid ID of a OSF rally space.", call. = FALSE)
+  content <<- get_latests(content)
+  gen_overview_data(content[[id]], outfile = FALSE)
+}
+
+#* @serializer contentType list(type="application/json")
 #* @get /update
 update_content <- function() {
   id <- substr(digest::digest(Sys.time()), 1, 6)
@@ -62,29 +87,34 @@ check_update <- function(id) {
 }
 
 #* @serializer contentType list(type="application/json")
-#* @get /questions
-get_questions_data <- function() {
-  content <<- get_latests(content)
-  gen_questions_data(content, outfile = FALSE)
+#* @get /update_ppt
+update_ppt <- function() {
+  id <- substr(digest::digest(Sys.time()), 1, 6)
+
+  tf <- tempfile()
+  f <- future({
+    capture.output(tmp <- get_rally_content(), type = "message", file = tf)
+  })
+  status[[id]] <<- list(f = f, tf = tf)
+  jsonlite::toJSON(id, auto_unbox = TRUE)
 }
 
-#* @serializer contentType list(type="application/json")
-#* @get /dashboard
-get_dashboard_data <- function() {
-  content <<- get_latests(content)
-  gen_dashboard_data(content, outfile = FALSE)
-}
-
-#* @serializer contentType list(type="application/json")
-#* @get /overview
-get_overview_data <- function(id) {
+#* @get /check_update_ppt
+check_update_ppt <- function(id) {
   if (missing(id))
-    stop("Must provide an ID for an OSF rally space.", call. = FALSE)
-  if (!id %in% names(content))
-    stop("The ID '", id, "' is not a valid ID of a OSF rally space.", call. = FALSE)
-  content <<- get_latests(content)
-  gen_overview_data(content[[id]], outfile = FALSE)
+    stop("Must provide an ID for an update process.", call. = FALSE)
+  if (is.null(status[[id]]))
+    stop("No update to check.")
+  if (!resolved(status[[id]]$f)) {
+    readLines(status[[id]]$tf, warn = FALSE)
+  } else {
+    res <- readLines(status[[id]]$tf, warn = FALSE)
+    c(res, "FINISHED")
+  }
 }
+
+
+
 
 # load_all()
 # library(plumber)
