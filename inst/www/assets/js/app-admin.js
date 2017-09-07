@@ -4,7 +4,7 @@ var decorate_error = function(a) {
     if (error.test(d)) {
       return "<span class='error'>" + d + '</span>';
     } else {
-      return d
+      return d;
     }
   });
   return a;
