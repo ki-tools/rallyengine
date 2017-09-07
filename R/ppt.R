@@ -187,7 +187,7 @@ gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FA
     }
   }
 
-  cat(digest::digest(content), file = dig_file)
+  cat(cur_dig, file = dig_file)
   print(ppt, target = filename) %>%
     invisible()
   # system(paste("open", filename))
