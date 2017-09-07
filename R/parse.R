@@ -419,8 +419,10 @@ parse_wikis <- function(rally_ids, force = FALSE) {
   res <- lapply(rally_ids, function(x) {
     message("---- parsing wiki for rally ID: ", x,
       " - https://osf.io/", x, "/wiki/home/?edit&menu ----")
-    parse_wiki(x, force = force)
+    tmp <- parse_wiki(x, force = force)
+    message("The reported rally number is: ", tmp$number)
     message("")
+    tmp
   })
   names(res) <- rally_ids
   class(res) <- c("list", "rallies_content")
