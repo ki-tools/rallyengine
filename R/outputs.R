@@ -99,7 +99,7 @@ gen_dashboard_data <- function(content, base_path = get_rally_base_path(), outfi
     a$tags <- paste(a$tags, collapse = ", ")
     a$osf_link <- paste0("http://osf.io/", a$osf_id)
     a$overview_link <- paste0("overview.html?id=", a$osf_id)
-    a$report_link <- paste0("ppt/Rally-", a$number, "_report.pptx")
+    a$report_link <- paste0("ppt/Rally-", output$number, "-", output$osf_id, "_report.txt")
     a
   }))
 

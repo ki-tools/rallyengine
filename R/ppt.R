@@ -132,7 +132,9 @@ gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FA
   filename <- paste0(ppt_path, "/Rally-", output$number, "-", output$osf_id, "_report.pptx")
   saved_dig <- ""
   if (file.exists(dig_file))
-    saved_dig <- readLines(dig_file, warn = FALSE)
+    saved_dig <- readLines(dig_file, warn = FALSE)[1]
+  if (length(saved_dig) == 0)
+    saved_dig <- ""
   if (saved_dig == cur_dig) {
     message("  Note: Text contents of wiki unchanged from last run...",
       " Not processing...",
