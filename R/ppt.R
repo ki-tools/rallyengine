@@ -126,7 +126,7 @@ gen_ppt_single <- function(output, base_path = get_rally_base_path(), force = FA
     dir.create(ppt_path)
 
   message("---- generating ppt for rally ID: ", output$osf_id,
-    " - https://osf.io/", x, "/wiki/home/?edit&menu (", output$number, ") ----")
+    " - https://osf.io/", output$osf_id, "/wiki/home/?edit&menu (", output$number, ") ----")
   cur_dig <- digest::digest(content)
   dig_file <- paste0(ppt_path, "/Rally-", output$number, "-", output$osf_id, "_report.txt")
   filename <- paste0(ppt_path, "/Rally-", output$number, "-", output$osf_id, "_report.pptx")
