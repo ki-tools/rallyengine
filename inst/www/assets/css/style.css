@@ -124,3 +124,7 @@ strong {
   padding: 15px;
   margin-top: 40px;
 }
+
+.error {
+  color: #9B242D;
+}

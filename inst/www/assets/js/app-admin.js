@@ -1,3 +1,15 @@
+var decorate_error = function(a) {
+  var error = new RegExp('^Error');
+  a = a.map(function(d) {
+    if (error.test(d)) {
+      return "<span class='error'>" + d + '</span>';
+    } else {
+      return d
+    }
+  });
+  return a;
+}
+
 $(document).ready(function(){
   SERVER = window.RALLY_API_SERVER;
 
@@ -19,6 +31,7 @@ $(document).ready(function(){
           } else {
             status_loop();
           }
+          out = decorate_error(out);
           var txt = anchorme(out.join("<br>"), { attributes: [{ name: "target", value: "blank"}]});
           $('#status').html(txt);
         }, 300);
@@ -51,6 +64,7 @@ $(document).ready(function(){
           } else {
             status_loop();
           }
+          out = decorate_error(out);
           var txt = anchorme(out.join("<br>"), { attributes: [{ name: "target", value: "blank"}]});
           $('#status').html(txt);
         }, 300);
