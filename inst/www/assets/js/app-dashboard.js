@@ -12,6 +12,23 @@ $( function() {
       ncomplete += complete;
     }
 
+    // pre-sort the data so there's not animation on load
+    data.sort(function compare(a, b) {
+      var aval = a.timeline.start;
+      var bval = b.timeline.start;
+      if (aval === null) {
+        aval = '';
+      }
+      if (bval === null) {
+        bval = '';
+      }
+      if (aval > bval)
+        return -1;
+      if (aval < bval)
+        return 1;
+      return 0;
+    });
+
     $('#title').html((data.length - ncomplete) + ' Active and ' + ncomplete + ' Completed Rallies');
 
     var template = $('#template').html();
@@ -36,10 +53,12 @@ $( function() {
     var rally_participants = {};
     $('.rally-participant > a').each(function() {
       var cur_participant = $(this).html();
-      var lcur_participant = cur_participant.toLowerCase();
-      if(rally_participants[lcur_participant] === undefined)
-        rally_participants[lcur_participant] = {participant: cur_participant, count: 0};
-      rally_participants[lcur_participant].count = rally_participants[lcur_participant].count + 1;
+      if (cur_participant !== "") {
+        var lcur_participant = cur_participant.toLowerCase();
+        if(rally_participants[lcur_participant] === undefined)
+          rally_participants[lcur_participant] = {participant: cur_participant, count: 0};
+        rally_participants[lcur_participant].count = rally_participants[lcur_participant].count + 1;
+      }
     });
 
     // populate the participant filter dropdown
@@ -86,12 +105,17 @@ $( function() {
       getSortData: {
         startdate: function(itemElem) {
           var dt = $(itemElem).find('.start-date').text();
-          var ddt = new Date(dt)
-          return ddt;
+          return dt;
+          // var ddt = new Date(dt)
+          // return ddt;
         },
         name: function(itemElem) {
-          var name = $(itemElem).find('.rally-title').text();
-          return name.toLowerCase();
+          var name = $(itemElem).find('.rally-title').text().toLowerCase();
+          var num = name.match(/\d+/)[0];
+          var chr = name.match(/[a-zA-Z]+/)[0];
+          var pad = "0000"
+          var res = pad.substring(0, pad.length - num.length) + num + chr;
+          return res;
         }
       },
       masonry: {
@@ -117,9 +141,9 @@ $( function() {
     // trigger isotope sort on #gridsort change
     $('#gridsort').change(function() {
       var sortVal = $(this).val();
-      if(sortVal === 'stars')
-        $grid.isotope('updateSortData');
-      $grid.isotope({ sortBy : sortVal });
+      // if(sortVal === 'stars')
+      // $grid.isotope('updateSortData');
+      $grid.isotope({ sortBy : sortVal, sortAscending: sortVal === 'startdate' ? false : true });
     });
 
     // trigger isotope filter on #participantfilter change
@@ -228,20 +252,11 @@ $( function() {
       $('#tagfilter').trigger('change');
     });
 
-    // $.getJSON( 'rally_meta.json', function(data) {
-    //   $.each(data, function(key, val) {
-    //   });
-    // })
-    // .success(function() {
-    //   // default sort is by github stars - trigger it on load
-    //   $('#gridsort').trigger('change');
-    // });
-
     // enforce initial filter (none)
     handleFilter();
 
     // enforce initial sort
-    $grid.isotope({ sortBy : 'startdate' })
+    // $grid.isotope({ sortBy : 'startdate', sortAscending: false })
 
     // make sure 'Showing x of n' is correct
     var curlen = $('.rally-current').filter(function() {return $(this).html() === 'true'}).length;
