@@ -1,6 +1,6 @@
 # build and run the Dockerfile
 
-docker build -t rallyengine .
+docker build --no-cache -t rallyengine .
 docker run --rm -p 8000:8000 -v $HOME/html:/html --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT rallyengine
 
 

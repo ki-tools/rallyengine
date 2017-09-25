@@ -37,10 +37,14 @@ get_dashboard_data <- function() {
 #* @serializer contentType list(type="application/json")
 #* @get /overview
 get_overview_data <- function(id) {
-  if (missing(id))
-    stop("Must provide an ID for an OSF rally space.", call. = FALSE)
-  if (!id %in% names(content))
-    stop("The ID '", id, "' is not a valid ID of a OSF rally space.", call. = FALSE)
+  if (missing(id)) {
+    message("Must provide an ID for an OSF rally space.", call. = FALSE)
+    return(NULL)
+  }
+  if (!id %in% names(content)) {
+    message("The ID '", id, "' is not a valid ID of a OSF rally space.", call. = FALSE)
+    return(NULL)
+  }
   content <<- get_latests(content)
   gen_overview_data(content[[id]], outfile = FALSE)
 }
@@ -71,10 +75,14 @@ update_content <- function() {
 
 #* @get /check_update
 check_update <- function(id) {
-  if (missing(id))
-    stop("Must provide an ID for an update process.", call. = FALSE)
-  if (is.null(status[[id]]))
-    stop("No update to check.")
+  if (missing(id)) {
+    message("Must provide an ID for an update process.", call. = FALSE)
+    return(NULL)
+  }
+  if (is.null(status[[id]])) {
+    message("No update to check.")
+    return(NULL)
+  }
   if (!resolved(status[[id]]$f)) {
     readLines(status[[id]]$tf, warn = FALSE)
   } else {
