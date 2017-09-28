@@ -53,7 +53,6 @@ get_latests <- function(objs) {
   objs
 }
 
-
 #' Ensure environment is set up (one-time only)
 #' @param server optional specification of API server address
 #' @export

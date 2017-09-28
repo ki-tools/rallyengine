@@ -31,7 +31,7 @@ get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
 #' Get rally content directly from cache
 #' @param base_path location of base path where outputs should be stored
 #' @export
-get_rally_content_cache <- function(base_path = get_rally_base_path()) {
+get_rally_content_cache <- function(base_path = get_rally_base_path(), root_id = NULL) {
   cache_path <- file.path(base_path, "cache")
   if (!dir.exists(cache_path))
     stop("No content in cache. Please run get_rally_content()")
@@ -39,9 +39,20 @@ get_rally_content_cache <- function(base_path = get_rally_base_path()) {
   nms <- gsub("\\.rds", "", basename(ff))
   res <- lapply(ff, readRDS)
   names(res) <- nms
+
+  # # if new rallies have come online, we need to take care of them
+  # if (is.null(root_id)) {
+  #   rally_ids <- get_rally_ids()
+  # } else {
+  #   rally_ids <- get_rally_ids(root_id)
+  # }
+  # not_added <- setdiff(rally_ids, nms)
+  # if (length(not_added) > 0) {
+  #   res <- c(res, parse_wikis(not_added))
+  # }
+
   res
 }
-
 
 #' Generate data for overview pages
 #'
