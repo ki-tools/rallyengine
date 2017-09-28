@@ -22,19 +22,20 @@ cors <- function(res) {
 
 #* @serializer contentType list(type="application/json")
 #* @get /rally_ids
-get_rally_ids <- function(completed = TRUE, in_progress = TRUE, no_timeline = TRUE) {
+get_rally_ids <- function() {
+  # completed = TRUE, in_progress = TRUE, no_timeline = TRUE
   ids <- names(content)
-  ends <- do.call(c, lapply(content, function(x) x$timeline$end))
-  ended_flag <- ends <= as.Date(Sys.time())
-  ind <- NULL
-  if (completed)
-    ind <- c(ind, which(ended_flag))
-  if (in_progress)
-    ind <- c(ind, which(!ended_flag))
-  if (no_timeline)
-    ind <- c(ind, which(is.na(ends)))
+  # ends <- do.call(c, lapply(content, function(x) x$timeline$end))
+  # ended_flag <- ends <= as.Date(Sys.time())
+  # ind <- NULL
+  # if (completed)
+  #   ind <- c(ind, which(ended_flag))
+  # if (in_progress)
+  #   ind <- c(ind, which(!ended_flag))
+  # if (no_timeline)
+  #   ind <- c(ind, which(is.na(ends)))
 
-  ids[ind]
+  jsonlite::toJSON(ids)
 }
 
 #* @serializer contentType list(type="application/json")
