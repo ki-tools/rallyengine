@@ -78,7 +78,7 @@ init_rally_engine <- function(server = Sys.getenv("RALLY_API_SERVER")) {
 #' Download file from OSF
 #' @param id OSF ID of file.
 #' @param dest destination to place downloaded file.
-#' @param id pat OSF personal access token.
+#' @param pat pat OSF personal access token.
 #' @export
 download_file <- function(id, dest, pat = get_osf_pat()) {
   config <- httr::add_headers(Authorization = sprintf("Bearer %s", pat))

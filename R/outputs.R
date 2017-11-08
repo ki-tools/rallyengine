@@ -40,6 +40,7 @@ get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
 
 #' Get rally content directly from cache
 #' @param base_path location of base path where outputs should be stored
+#' @param root_id root rally OSF component id
 #' @export
 get_rally_content_cache <- function(base_path = get_rally_base_path(), root_id = NULL) {
   cache_path <- file.path(base_path, "cache")
@@ -148,8 +149,9 @@ gen_overview_data <- function(content, base_path = get_rally_base_path(), outfil
 #' @export
 gen_dashboard_data <- function(content, base_path = get_rally_base_path(), outfile = TRUE) {
   res <- unname(lapply(content, function(a) {
-    a <- a[c("number", "osf_id", "title", "tags", "participants", "timeline", "focus",
-      "group", "presentation_id")]
+    nms <- c("number", "osf_id", "title", "tags", "participants", "timeline", "focus",
+      "presentation_id", "group")
+    a <- a[intersect(names(a), nms)]
     a$rally <- gsub("([0-9]+).*", "\\1", a$number)
     a$sprint <- toupper(gsub("([0-9]+)(.*)", "\\2", a$number))
     a$tags <- paste(a$tags, collapse = ", ")

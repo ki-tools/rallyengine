@@ -191,6 +191,7 @@ check_update_final_ppt <- function(id) {
 # export RALLY_BASE_PATH=~/html
 # export RALLY_API_SERVER=http://hbghdkirallyengine.exaptive.city:8000
 
+# curl http://hbghdkirallyengine.exaptive.city:8000/dashboard
 # curl localhost:8000/questions
 # curl localhost:8000/dashboard
 # curl localhost:8000/overview?id=35y4a

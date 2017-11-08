@@ -8,6 +8,8 @@ get_rally_content_cache(base_path = get_rally_base_path(), root_id = NULL)
 }
 \arguments{
 \item{base_path}{location of base path where outputs should be stored}
+
+\item{root_id}{root rally OSF component id}
 }
 \description{
 Get rally content directly from cache

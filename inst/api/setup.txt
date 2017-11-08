@@ -5,9 +5,9 @@ docker build --no-cache -t rallyengine1 .
 docker run -d -p 8000:8000 -v $HOME/rallyserver/html:/html --restart always --name rallyengine1 --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT rallyengine1
 
 # docker ps
-# docker logs rallyengine
-# docker stop rallyengine
-# docker rm rallyengine
+# docker logs rallyengine1
+# docker stop rallyengine1
+# docker rm rallyengine1
 
 # docker run -it --rm -v $HOME/html:/html --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT --entrypoint /bin/bash trestletech/plumber
 # docker run --rm -p 8000:8000 -v `pwd`/api.R:/plumber.R trestletech/plumber /plumber.R

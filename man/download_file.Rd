@@ -11,7 +11,7 @@ download_file(id, dest, pat = get_osf_pat())
 
 \item{dest}{destination to place downloaded file.}
 
-\item{id}{pat OSF personal access token.}
+\item{pat}{pat OSF personal access token.}
 }
 \description{
 Download file from OSF
