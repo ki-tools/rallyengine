@@ -290,7 +290,7 @@ parse_entry <- function(x) {
     if (inherits(x$content, "fixme")) return(x)
   } else if (type == "OSF ID") {
     x <- expect_num_lines(x, 1)
-    if (x$content == "") {
+    if (x$content == "" || x$content == "xxxxx") {
       x$content <- NA
     } else {
       x <- expect_osf_link(x)
@@ -392,7 +392,7 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
   }
 
   # auxilliary outputs
-  output$participants_names <- ""
+  output$participant_names <- ""
   if (!inherits(output$participants, "fixme"))
     output$participant_names <- paste0(sapply(output$participants,
       function(x) x$name), collapse = ", ")

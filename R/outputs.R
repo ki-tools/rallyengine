@@ -25,7 +25,17 @@ get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
   if (is.null(rally_ids))
     stop("Must specify either root_id or rally_ids.", call. = FALSE)
 
-  parse_wikis(rally_ids, force = force)
+  content <- parse_wikis(rally_ids, force = force)
+
+  groups <- get_rally_groups()
+  for (gp in groups) {
+    for (chld in gp$children) {
+      if (!is.null(content[[chld]]))
+        content[[chld]]$group <- gp
+    }
+  }
+
+  content
 }
 
 #' Get rally content directly from cache
@@ -54,6 +64,33 @@ get_rally_content_cache <- function(base_path = get_rally_base_path(), root_id =
   res
 }
 
+#' Get rally group information
+#'
+#' @param root_id root rally OSF component id
+#' @export
+get_rally_groups <- function(root_id = "s7p4z") {
+  pat <- get_osf_pat()
+  config <- httr::add_headers(Authorization = sprintf("Bearer %s", pat))
+  link <- paste0("https://api.osf.io/v2/nodes/", root_id, "/children/")
+  call <- httr::GET(link, config)
+  out <- jsonlite::fromJSON(httr::content(call, "text", encoding = "UTF-8"))
+
+  res <- lapply(seq_along(out$data$attributes$title), function(i) {
+    ttl <- out$data$attributes$title[i]
+    num <- gsub("Rally ([0-9]+)\\..*", "\\1", ttl)
+    nm <- trimws(gsub("Rally [0-9]+\\.(.*)", "\\1", ttl))
+    id <- out$data$id[i]
+    # get children
+    link <- paste0("https://api.osf.io/v2/nodes/", id, "/children/")
+    call <- httr::GET(link, config)
+    tmp <- jsonlite::fromJSON(httr::content(call, "text", encoding = "UTF-8"))
+    children <- tmp$data$id
+    list(num = num, name = nm, id = id, children = children)
+  })
+  nums <- sapply(res, function(x) x$num)
+  res[order(nums)]
+}
+
 #' Generate data for overview pages
 #'
 #' @param content list of rally template content obtained from \code{\link{get_rally_content}}, or a single element of this
@@ -69,8 +106,13 @@ gen_overview_data <- function(content, base_path = get_rally_base_path(), outfil
     x <- x[keep]
     clean <- c("deliverables", "data_predictors", "findings", "next_steps")
     for (nm in clean) {
-      x[[nm]] <- paste(unlist(lapply(x[[nm]][[1]],
-        function(a) paste(a, collapse = "\n"))), collapse = "\n\n")
+      if (inherits(x[[nm]], "osf_bulletlist")) {
+        x[[nm]] <- paste(unlist(lapply(x[[nm]],
+          function(a) paste(a, collapse = "\n"))), collapse = "\n")
+      } else {
+        x[[nm]] <- paste(unlist(lapply(x[[nm]],
+          function(a) paste(a, collapse = "\n"))), collapse = "\n\n")
+      }
     }
     jsonlite::toJSON(x, auto_unbox = TRUE, pretty = TRUE)
   }
@@ -106,11 +148,16 @@ gen_overview_data <- function(content, base_path = get_rally_base_path(), outfil
 #' @export
 gen_dashboard_data <- function(content, base_path = get_rally_base_path(), outfile = TRUE) {
   res <- unname(lapply(content, function(a) {
-    a <- a[c("number", "osf_id", "title", "tags", "participants", "timeline", "focus")]
+    a <- a[c("number", "osf_id", "title", "tags", "participants", "timeline", "focus",
+      "group", "presentation_id")]
+    a$rally <- gsub("([0-9]+).*", "\\1", a$number)
+    a$sprint <- toupper(gsub("([0-9]+)(.*)", "\\2", a$number))
     a$tags <- paste(a$tags, collapse = ", ")
     a$osf_link <- paste0("http://osf.io/", a$osf_id)
     a$overview_link <- paste0("overview.html?id=", a$osf_id)
-    a$report_link <- paste0("ppt/Rally-", a$number, "-", a$osf_id, "_report.pptx")
+    a$report_link <- NULL
+    if (!is.null(a$presentation_id))
+      a$report_link <- paste0("ppt_final/", a$number, ".pptx")
     a
   }))
 
@@ -183,5 +230,26 @@ gen_ppt <- function(content, base_path = get_rally_base_path(), force = FALSE, i
     if (inherits(res, "try-error"))
       message(as.character(res))
     message("")
+  }
+}
+
+#' Generate powerpoint slides from rally content
+#'
+#' @param content list of rally template content obtained from \code{\link{get_rally_content}}
+#' @param base_path location of base path where outputs should be stored
+#' @export
+download_ppt_final <- function(content, base_path = get_rally_base_path()) {
+  out_dir <- file.path(base_path, "ppt_final")
+  if (!dir.exists(out_dir))
+    dir.create(out_dir)
+
+  for (ctnt in content) {
+    message("Downloading final ppt presentation for ", ctnt$number, "...")
+    if (!is.null(ctnt$presentation_id)) {
+      fp <- file.path(out_dir, paste0(ctnt$number, ".pptx"))
+      download_file(ctnt$presentation_id, fp)
+    } else {
+      message("... Final ppt not specified for ", ctnt$number, ".")
+    }
   }
 }

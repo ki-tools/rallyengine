@@ -67,11 +67,29 @@ init_rally_engine <- function(server = Sys.getenv("RALLY_API_SERVER")) {
     to = base_path
   )
   if (!is.null(server) && server != "" && is.character(server))
-    cat(paste0("window.RALLY_API_SERVER = '", server, "';"), file = file.path(base_path, "config.js"))
+    cat(paste0("window.RALLY_API_SERVER = '", server, "';"),
+      file = file.path(base_path, "config.js"))
   cat("", file = file.path(base_path, ".initialized"))
 
   message("You are good to go!")
   invisible(NULL)
+}
+
+#' Download file from OSF
+#' @param id OSF ID of file.
+#' @param dest destination to place downloaded file.
+#' @param id pat OSF personal access token.
+#' @export
+download_file <- function(id, dest, pat = get_osf_pat()) {
+  config <- httr::add_headers(Authorization = sprintf("Bearer %s", pat))
+  link <- paste0("https://api.osf.io/v2/files/", id)
+  call <- httr::GET(link, config)
+  if (call$status_code == 200) {
+    res <- jsonlite::fromJSON(httr::content(call, "text", encoding = "UTF-8"))
+    call <- httr::GET(res$data$links$download, config,
+      httr::write_disk(dest, overwrite = TRUE))
+  }
+  invisible(dest)
 }
 
 copy_dir <- function(from, to) {

@@ -10,7 +10,7 @@ $(document).ready(function(){
       SERVER = window.RALLY_API_SERVER + '/overview?id=' + id;
     }
     $.getJSON(SERVER, function(data) {
-      var mrk = ['background', 'motivation', 'focus', 'data_outcomes', 'data_predictors', 'methods', 'findings', 'value', 'deliverables'];
+      var mrk = ['background', 'motivation', 'focus', 'data_outcomes', 'data_predictors', 'methods', 'findings', 'value', 'deliverables', 'next_steps'];
       mrk.forEach(function(nm) {
         if ($.isArray(data[nm])) {
           data[nm] = data[nm].join("\n");

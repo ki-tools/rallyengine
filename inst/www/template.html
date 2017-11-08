@@ -17,10 +17,9 @@
       <nav class="bmgf-green" role="navigation">
         <div class="nav-wrapper container"><span id="logo-container" class="sanspro"><span style="font-weight:bold;">HBGDki</span> Rally Dashboard</span>
           <ul class="right hide-on-med-and-down">
-            <li><a href="index.html">Rallies</a></li>
-            <li><a href="timeline.html">Timeline</a></li>
+            <li class="active"><a href="index.html">Rallies</a></li>
             <li><a href="questions.html">Questions</a></li>
-            <li class="active"><a href="admin.html">Admin</a></li>
+            <li><a href="admin.html">Admin</a></li>
           </ul>
 
           <ul id="nav-mobile" class="side-nav">
@@ -30,31 +29,22 @@
         </div>
       </nav>
     </div>
-
     <div class="section no-pad-bot" id="index-banner">
       <div class="container">
         <br>
-        <h4 class="center page-title" id="title">Rally Admin</h4>
+        <h4 class="center page-title" id="title"></h4>
         <br>
+
       </div>
     </div>
 
-    <!-- <div class="container"> -->
-    <div class="main-container">
-      <div class="container center">
-        <div class="row">
-          <a class="waves-effect waves-light btn-large" id="parse-button">Parse OSF Master Templates</a>
-          <a class="waves-effect waves-light btn-large" id="ppt-button">Build PPT Presentations</a>
-          <a class="waves-effect waves-light btn-large" id="ppt-final-button">Copy Final PPT Presentations</a>
-        </div>
-        <div class="row">
-          <p>Parsing the master templates automatically updates the contents of the rally dashboard views and the rally overview pages.</p>
-        </div>
-        <div class="row">
-          <div id="status" class="hidden"></div>
-        </div>
-      </div>
+    <div class="container center">
+    <div class="row">
+      <form class="col s12">
+      </form>
     </div>
+    </div>
+    <!-- <div class="container"> -->
 
 <!--     <footer class="page-footer light-blue">
       <div class="footer-copyright">
@@ -67,8 +57,9 @@
 
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/mustache.min.js"></script>
     <script type="text/javascript" src="assets/js/materialize.min.js"></script>
-    <script type="text/javascript" src="assets/js/anchorme.min.js"></script>
-    <script type="text/javascript" src="assets/js/app-admin.js"></script>
+    <script type="text/javascript" src="assets/js/isotope.min.js"></script>
+    <!-- <script type="text/javascript" src="assets/js/app-dashboard.js"></script> -->
   </body>
 </html>

@@ -18,6 +18,7 @@
         <div class="nav-wrapper container"><span id="logo-container" class="sanspro"><span style="font-weight:bold;">HBGDki</span> Rally Dashboard</span>
           <ul class="right hide-on-med-and-down">
             <li class="active"><a href="index.html">Rallies</a></li>
+            <li><a href="timeline.html">Timeline</a></li>
             <li><a href="questions.html">Questions</a></li>
             <li><a href="admin.html">Admin</a></li>
           </ul>
@@ -46,7 +47,7 @@
             <!-- <i class="material-icons prefix">sort_by_alpha</i> -->
             <select id="gridsort">
               <option value="startdate" selected>Most Recent</option>
-              <option value="name">Rally Name</option>
+              <option value="name">Sprint Name</option>
             </select>
             <label>Sort</label>
           </div>
@@ -70,7 +71,7 @@
             <label>Tag Filter</label>
           </div>
           <div class="col s2">
-            <div class="switch-label tooltipped" data-position="top" data-delay="10" data-tooltip="View only rallies that are currently running."><label>View Active Rallies Only</label></div>
+            <div class="switch-label tooltipped" data-position="top" data-delay="10" data-tooltip="View only rallies that are currently running."><label>View Active Sprints Only</label></div>
             <div class="switch current-switch">
               <label>
                 <!-- Off -->
@@ -109,12 +110,19 @@
       {{#.}}
       <div class="card grid-item" data-participant="yonicd">
         <div class="card-content rally-content">
-          <p class="rally-title">Rally {{number}}. {{title}}</p>
+          <p class="rally-title">
+            <strong>Rally <span class="rally-num">{{rally}}</span>.</strong> {{group.name}}
+          </p>
+          <p class="rally-title">
+            <strong>Sprint <span class="sprint-num">{{sprint}}</span>.</strong> {{title}}
+          </p>
           <p class="rally-item rally-focus"><span class="rally-bold">Focus:</span> {{focus}}</p>
           <p class="rally-item rally-participant">
             <span class="rally-bold">Participants:</span>
             {{#participants}}
-              <a href="mailto:{{email}}">{{name}}</a>, <!--({{role}}, {{affiliation}});-->
+              <a href="javascript:;">
+              <span class="rally-participant-name">{{name}}</span>;
+              </a> <!--({{role}}, {{affiliation}});-->
             {{/participants}}
           </p>
           <p class="rally-item"><span class="rally-bold">Tags:</span>
@@ -127,9 +135,11 @@
           <p class="rally-item">
             <span class="rally-bold">Status:</span> <span class="rally-current">{{complete}}</span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{{overview_link}}" target="_blank">Rally Overview <span class="icon-external-link-square"></span></a>
+            <a href="{{overview_link}}" target="_blank">Overview <span class="icon-external-link-square"></span></a>
             &nbsp;&nbsp;&nbsp;
-            <a href="{{report_link}}">Rally Report <span class="icon-external-link-square"></span></a>
+            <a href="{{report_link}}">PPT <span class="icon-external-link-square"></span></a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{{osf_link}}" target="_blank">OSF <span class="icon-external-link-square"></span></a>
           </p>
         </div>
         <div class="card-reveal" style="display: none; -webkit-transform: translateY(0px);">

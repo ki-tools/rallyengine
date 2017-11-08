@@ -1,14 +1,17 @@
 # build and run the Dockerfile
+docker build --no-cache -t rallyengine1 .
 
-docker build --no-cache -t rallyengine .
-docker run -d -p 8000:8000 -v $HOME/html:/html --restart always --name rallyengine --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT rallyengine
+# run the docker file
+docker run -d -p 8000:8000 -v $HOME/rallyserver/html:/html --restart always --name rallyengine1 --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT rallyengine1
 
 # docker ps
 # docker logs rallyengine
 # docker stop rallyengine
+# docker rm rallyengine
 
 # docker run -it --rm -v $HOME/html:/html --env RALLY_API_SERVER --env RALLY_BASE_PATH=/html --env OSF_PAT --entrypoint /bin/bash trestletech/plumber
 # docker run --rm -p 8000:8000 -v `pwd`/api.R:/plumber.R trestletech/plumber /plumber.R
 
 # To run locally:
 # pr <- plumber::plumb("inst/api/api.R"); pr$run()
+

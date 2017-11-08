@@ -18,6 +18,7 @@
         <div class="nav-wrapper container"><span id="logo-container" class="sanspro"><span style="font-weight:bold;">HBGDki</span> Rally Dashboard</span>
           <ul class="right hide-on-med-and-down">
             <li><a href="index.html">Rallies</a></li>
+            <li><a href="timeline.html">Timeline</a></li>
             <li><a href="questions.html">Questions</a></li>
             <li><a href="admin.html">Admin</a></li>
           </ul>
@@ -77,20 +78,9 @@
       {{/participants}}
       </ul>
 
-      <h5>Datasets</h5>
+      <h5>Methods</h5>
 
-      {{#data_list}}
-      <h6>Study: {{{study_id}}}</h6>
-
-      <ul>
-        <li><strong>Description</strong>: {{{desc}}}</li>
-        <li><strong>Study Type</strong>: {{{type}}}</li>
-        <li><strong>Population</strong>: {{{pop}}}</li>
-        <li><strong>Number of Subjects</strong>: {{{subj_count}}}</li>
-        <li><strong>Intervention</strong>: {{{intervention_type}}}</li>
-        <li><strong>Countries</strong>: {{{country}}}</li>
-      </ul>
-      {{/data_list}}
+      {{{methods}}}
 
       <h5>Outcome Variables</h5>
 
@@ -99,10 +89,6 @@
       <h5>Predictor Variables</h5>
 
       {{{data_predictors}}}
-
-      <h5>Methods</h5>
-
-      {{{methods}}}
 
       <h5>Key Findings</h5>
 
@@ -114,7 +100,7 @@
 
       <h5>Next Steps</h5>
 
-      {{{next}}}
+      {{{next_steps}}}
       {{/.}}
     </script>
 
@@ -127,3 +113,20 @@
     <script type="text/javascript" src="assets/js/app-overview.js"></script>
   </body>
 </html>
+
+<!--
+<h5>Datasets</h5>
+
+{{#data_list}}
+<h6>Study: {{{study_id}}}</h6>
+
+<ul>
+  <li><strong>Description</strong>: {{{desc}}}</li>
+  <li><strong>Study Type</strong>: {{{type}}}</li>
+  <li><strong>Population</strong>: {{{pop}}}</li>
+  <li><strong>Number of Subjects</strong>: {{{subj_count}}}</li>
+  <li><strong>Intervention</strong>: {{{intervention_type}}}</li>
+  <li><strong>Countries</strong>: {{{country}}}</li>
+</ul>
+{{/data_list}}
+-->

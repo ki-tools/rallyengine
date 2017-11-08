@@ -1,3 +1,11 @@
+function unique(list) {
+  var result = [];
+  $.each(list, function(i, e) {
+    if ($.inArray(e, result) == -1) result.push(e);
+  });
+  return result;
+}
+
 $( function() {
   var SERVER = 'rally_data.json';
   if (window.RALLY_API_SERVER !== undefined) {
@@ -29,7 +37,10 @@ $( function() {
       return 0;
     });
 
-    $('#title').html((data.length - ncomplete) + ' Active and ' + ncomplete + ' Completed Rallies');
+    var nrallies = unique(data.map(function(d) { return d.group.num; })).length;
+
+    $('#title').html((data.length - ncomplete) + ' Active Sprints and ' + ncomplete +
+      ' Completed Sprints from ' + nrallies + ' Rallies');
 
     var template = $('#template').html();
     Mustache.parse(template);   // optional, speeds up future uses
@@ -51,7 +62,7 @@ $( function() {
     // count number of participants to populate dropdown
     // and key it so it can be alphabetized by participant
     var rally_participants = {};
-    $('.rally-participant > a').each(function() {
+    $('.rally-participant-name').each(function() {
       var cur_participant = $(this).html();
       if (cur_participant !== "") {
         var lcur_participant = cur_participant.toLowerCase();
@@ -110,9 +121,8 @@ $( function() {
           // return ddt;
         },
         name: function(itemElem) {
-          var name = $(itemElem).find('.rally-title').text().toLowerCase();
-          var num = name.match(/\d+/)[0];
-          var chr = name.match(/[a-zA-Z]+/)[0];
+          var num = $(itemElem).find('.rally-num').text().toLowerCase();
+          var chr = $(itemElem).find('.sprint-num').text().toLowerCase();
           var pad = "0000"
           var res = pad.substring(0, pad.length - num.length) + num + chr;
           return res;
@@ -206,7 +216,7 @@ $( function() {
         var participantBool = true;
         if(! (participantVal === '' || participantVal === null)) {
           participantBool = false;
-          $(this).find('.rally-participant > a').map(function(i, d) {
+          $(this).find('.rally-participant-name').map(function(i, d) {
             participantBool = participantBool || $(d).text() === participantVal;
           })
         }
@@ -250,6 +260,14 @@ $( function() {
       $('#tagfilter > option[value="' + $(this).html() + '"]').attr('selected', 'selected');
       $('select').material_select();
       $('#tagfilter').trigger('change');
+    });
+
+    // handle click on participants
+    $('.rally-participant-name').click(function() {
+      $('#participantfilter > option').removeAttr('selected');
+      $('#participantfilter > option[value="' + $(this).html() + '"]').attr('selected', 'selected');
+      $('select').material_select();
+      $('#participantfilter').trigger('change');
     });
 
     // enforce initial filter (none)

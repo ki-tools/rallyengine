@@ -4,7 +4,7 @@
 \alias{get_rally_content_cache}
 \title{Get rally content directly from cache}
 \usage{
-get_rally_content_cache(base_path = get_rally_base_path())
+get_rally_content_cache(base_path = get_rally_base_path(), root_id = NULL)
 }
 \arguments{
 \item{base_path}{location of base path where outputs should be stored}

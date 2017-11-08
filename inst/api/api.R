@@ -12,6 +12,8 @@ if (!dir.exists(file.path(base_path, "cache"))) {
   content <- get_rally_content_cache()
 }
 
+groups <- get_rally_groups()
+
 status <- list()
 
 #* @filter cors
@@ -48,6 +50,13 @@ get_questions_data <- function() {
 #* @serializer contentType list(type="application/json")
 #* @get /dashboard
 get_dashboard_data <- function() {
+  content <<- get_latests(content)
+  gen_dashboard_data(content, outfile = FALSE)
+}
+
+#* @serializer contentType list(type="application/json")
+#* @get /rally_groups
+get_groups_data <- function() {
   content <<- get_latests(content)
   gen_dashboard_data(content, outfile = FALSE)
 }
@@ -139,7 +148,33 @@ check_update_ppt <- function(id) {
   }
 }
 
+#* @serializer contentType list(type="application/json")
+#* @get /update_final_ppt
+update_final_ppt <- function() {
+  content <<- get_latests(content)
 
+  id <- substr(digest::digest(Sys.time()), 1, 6)
+  tf <- tempfile()
+  f <- future({
+    capture.output(tmp <- download_ppt_final(content, base_path), type = "message", file = tf)
+  })
+  status[[id]] <<- list(f = f, tf = tf)
+  jsonlite::toJSON(id, auto_unbox = TRUE)
+}
+
+#* @get /check_update_final_ppt
+check_update_final_ppt <- function(id) {
+  if (missing(id))
+    stop("Must provide an ID for an update process.", call. = FALSE)
+  if (is.null(status[[id]]))
+    stop("No update to check.")
+  if (!resolved(status[[id]]$f)) {
+    readLines(status[[id]]$tf, warn = FALSE)
+  } else {
+    res <- readLines(status[[id]]$tf, warn = FALSE)
+    c(res, "FINISHED")
+  }
+}
 
 
 # load_all()
