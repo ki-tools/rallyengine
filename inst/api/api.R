@@ -6,13 +6,13 @@ init_rally_engine()
 
 base_path <- get_rally_base_path()
 
+groups <- get_rally_groups()
+
 if (!dir.exists(file.path(base_path, "cache"))) {
-  content <- get_rally_content()
+  content <- get_rally_content(groups = groups)
 } else {
   content <- get_rally_content_cache()
 }
-
-groups <- get_rally_groups()
 
 status <- list()
 

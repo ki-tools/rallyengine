@@ -3,18 +3,21 @@
 #' @param root_id root rally OSF component id
 #' @param rally_ids vector of OSF component ids pointing to indivual rally spaces
 #' @param force should template content be forced to be read and parsed from OSF instead of from the cache even if text content matches?
+#' @param groups optional list providing information about the rally groups
 #' @export
 #' @examples
 #' \dontrun{
 #' # init_rally_engine() # one time only
 #' rally_ids <- get_rally_ids()
-#' content <- get_rally_content(rally_ids = rally_ids)
+#' groups <- get_rally_groups()
+#' content <- get_rally_content(rally_ids = rally_ids, groups = groups)
 #' gen_overview_data(content)
 #' gen_dashboard_data(content)
 #' gen_questions_data(content)
 #' gen_ppt(content)
 #' }
-get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
+get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE,
+  groups = groups) {
   if (is.null(rally_ids)) {
     if (is.null(root_id)) {
       rally_ids <- get_rally_ids()
@@ -25,15 +28,7 @@ get_rally_content <- function(root_id = NULL, rally_ids = NULL, force = FALSE) {
   if (is.null(rally_ids))
     stop("Must specify either root_id or rally_ids.", call. = FALSE)
 
-  content <- parse_wikis(rally_ids, force = force)
-
-  groups <- get_rally_groups()
-  for (gp in groups) {
-    for (chld in gp$children) {
-      if (!is.null(content[[chld]]))
-        content[[chld]]$group <- gp
-    }
-  }
+  content <- parse_wikis(rally_ids, force = force, groups = groups)
 
   content
 }

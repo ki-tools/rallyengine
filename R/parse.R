@@ -356,7 +356,7 @@ parse_entry <- function(x) {
 
 #' @importFrom digest digest
 parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
-  base_path = get_rally_base_path()) {
+  base_path = get_rally_base_path(), groups = NULL) {
 
   cache_path <- file.path(base_path, "cache")
 
@@ -404,6 +404,14 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
 
   output$osf_id <- rally_id
 
+  if (is.null(groups))
+    groups <- get_rally_groups()
+
+  for (gp in groups) {
+    if (rally_id %in% gp$children)
+      output$group <- gp
+  }
+
   class(output) <- c("list", "rally_content")
 
   message("caching to: ", dig_file, "...")
@@ -415,11 +423,11 @@ parse_wiki <- function(rally_id, force = FALSE, pat = get_osf_pat(),
   output
 }
 
-parse_wikis <- function(rally_ids, force = FALSE) {
+parse_wikis <- function(rally_ids, force = FALSE, groups = NULL) {
   res <- lapply(rally_ids, function(x) {
     message("---- parsing wiki for rally ID: ", x,
       " - https://osf.io/", x, "/wiki/home/?edit&menu ----")
-    tmp <- parse_wiki(x, force = force)
+    tmp <- parse_wiki(x, force = force, groups = groups)
     message("The reported rally number is: ", tmp$number)
     message("")
     tmp

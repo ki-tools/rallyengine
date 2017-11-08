@@ -4,7 +4,8 @@
 \alias{get_rally_content}
 \title{Get and parse full rally template data for a either a base rally OSF id or a vector of rally OSF ids}
 \usage{
-get_rally_content(root_id = NULL, rally_ids = NULL, force = FALSE)
+get_rally_content(root_id = NULL, rally_ids = NULL, force = FALSE,
+  groups = groups)
 }
 \arguments{
 \item{root_id}{root rally OSF component id}
@@ -12,6 +13,8 @@ get_rally_content(root_id = NULL, rally_ids = NULL, force = FALSE)
 \item{rally_ids}{vector of OSF component ids pointing to indivual rally spaces}
 
 \item{force}{should template content be forced to be read and parsed from OSF instead of from the cache even if text content matches?}
+
+\item{groups}{optional list providing information about the rally groups}
 }
 \description{
 Get and parse full rally template data for a either a base rally OSF id or a vector of rally OSF ids
@@ -20,7 +23,8 @@ Get and parse full rally template data for a either a base rally OSF id or a vec
 \dontrun{
 # init_rally_engine() # one time only
 rally_ids <- get_rally_ids()
-content <- get_rally_content(rally_ids = rally_ids)
+groups <- get_rally_groups()
+content <- get_rally_content(rally_ids = rally_ids, groups = groups)
 gen_overview_data(content)
 gen_dashboard_data(content)
 gen_questions_data(content)

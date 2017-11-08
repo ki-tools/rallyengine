@@ -14,4 +14,3 @@ docker run -d -p 8000:8000 -v $HOME/rallyserver/html:/html --restart always --na
 
 # To run locally:
 # pr <- plumber::plumb("inst/api/api.R"); pr$run()
-
