@@ -83,7 +83,7 @@ update_content <- function() {
 
   tf <- tempfile()
   f <- future({
-    capture.output(tmp <- get_rally_content(), type = "message", file = tf)
+    capture.output(tmp <- get_rally_content(groups = groups), type = "message", file = tf)
   })
   # f <- future({
   #   res <- 1
