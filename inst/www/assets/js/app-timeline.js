@@ -20,7 +20,9 @@ $( function() {
       {id: 2, content: 'Rally 2: Fetal Growth Patterns', value: 2},
       {id: 3, content: 'Rally 3: GA Estimation Ultrasound', value: 3},
       {id: 4, content: 'Rally 4: Wasting', value: 4},
-      {id: 5, content: 'Rally 5: GA Shift Analysis', value: 5}
+      {id: 5, content: 'Rally 5: GA Shift Analysis', value: 5},
+      {id: 6, content: 'Rally 6: India Data', value: 6},
+      {id: 7, content: 'Rally 7: Stunting', value: 7}
     ]);
 
     var items2 = data.map(function(d, i) {
