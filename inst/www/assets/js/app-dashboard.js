@@ -39,8 +39,9 @@ $( function() {
 
     var nrallies = unique(data.map(function(d) { return d.group.num; })).length;
 
-    $('#title').html((data.length - ncomplete) + ' Active Sprints and ' + ncomplete +
-      ' Completed Sprints from ' + nrallies + ' Rallies');
+    var sss = ((data.length - ncomplete) === 1) ? '' : 's';
+    $('#title').html((data.length - ncomplete) + ' Active Sprint' + sss + ' and ' +
+      ncomplete + ' Completed Sprints from ' + nrallies + ' Rallies');
 
     var template = $('#template').html();
     Mustache.parse(template);   // optional, speeds up future uses
